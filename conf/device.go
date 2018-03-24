@@ -1,3 +1,5 @@
+// Copyright © 2018 Seonghyun Park <pseohy@gmail.com>
+
 package conf
 
 import (
@@ -9,9 +11,14 @@ var ErrInvalidArguments = errors.New("Invalid arguments")
 
 type Device struct {
 	Address []byte         `json: "address"`
-	dtype   string         `json: "dtype"`
-	did     int64          `json: "did"`
-	usage   map[string]int `json: "usage"`
+	Dtype   string         `json: "dtype"`
+	Did     int64          `json: "did"`
+	Status  bool           `json: "status"`
+	Usage   map[string]int `,json: "usage"`
+}
+
+type Devices struct {
+	data []Device
 }
 
 func Checksum(dtype, did string) ([]byte, error) {
