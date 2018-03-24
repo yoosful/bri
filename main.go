@@ -20,8 +20,15 @@
 
 package main
 
-import "github.com/pseohy/bri/cmd"
+import (
+	"github.com/pseohy/bri/cmd"
+	"github.com/pseohy/bri/conf"
+)
 
 func main() {
 	cmd.Execute()
+}
+
+func init() {
+	conf.DeviceData.Init()
 }

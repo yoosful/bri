@@ -21,8 +21,8 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
@@ -32,19 +32,26 @@ import (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Add a new device",
+	Long:  `Add a new device, encrypted with SHA256`,
 	Run: func(cmd *cobra.Command, args []string) {
 		h, err := conf.Checksum(dtype, did)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%x added: {\"dtype\": %s, \"did\": %s}\n", h, dtype, did)
+
+		id, err := strconv.ParseInt(did, 10, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		conf.DeviceData.Add(h, conf.Device{
+			Address: h,
+			Dtype:   dtype,
+			Did:     id,
+			Usage:   make(map[string]int),
+			Status:  false,
+		})
+		conf.DeviceData.Dump()
 	},
 }
 
