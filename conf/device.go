@@ -23,7 +23,7 @@ type Devices struct {
 
 func Checksum(dtype, did string) ([]byte, error) {
 	h := sha256.New()
-	src := make([]byte, 256)
+	src := make([]byte, 0, 256)
 
 	if dtype == "" || did == "" {
 		return nil, ErrInvalidArguments
