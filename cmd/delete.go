@@ -22,8 +22,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // deleteCmd represents the delete command
@@ -37,20 +40,20 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
+		h, err := conf.Checksum(dtype, did)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%x deleted: {\"dtype\": %s, \"did\": %s}\n", h, dtype, did)
 	},
 }
 
 func init() {
 	configCmd.AddCommand(deleteCmd)
 
-	// Here you will define your flags and configuration settings.
+	deleteCmd.Flags().StringVarP(&dtype, "type", "t", "", "Device type")
+	deleteCmd.Flags().StringVarP(&did, "id", "i", "", "Device serial no.")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlag("type", deleteCmd.Flags().Lookup("type"))
+	viper.BindPFlag("id", deleteCmd.Flags().Lookup("id"))
 }

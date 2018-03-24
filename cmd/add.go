@@ -22,8 +22,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // addCmd represents the add command
@@ -37,20 +40,25 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
+		h, err := conf.Checksum(dtype, did)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%x added: {\"dtype\": %s, \"did\": %s}\n", h, dtype, did)
 	},
 }
+
+var (
+	dtype string
+	did   string
+)
 
 func init() {
 	configCmd.AddCommand(addCmd)
 
-	// Here you will define your flags and configuration settings.
+	addCmd.Flags().StringVarP(&dtype, "type", "t", "", "Device type")
+	addCmd.Flags().StringVarP(&did, "id", "i", "", "Device serial no.")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// addCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlag("type", addCmd.Flags().Lookup("type"))
+	viper.BindPFlag("id", addCmd.Flags().Lookup("id"))
 }
