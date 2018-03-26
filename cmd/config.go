@@ -37,6 +37,11 @@ are encrypted.`,
 	},
 }
 
+var (
+	dtype string
+	did   string
+)
+
 func init() {
 	rootCmd.AddCommand(configCmd)
 

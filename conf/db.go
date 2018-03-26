@@ -5,12 +5,15 @@ package conf
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
 )
 
 var DeviceData Devices
+
+var ErrDuplicateDevice = errors.New("Duplicate Device")
 
 func (d *Devices) Init() error {
 	file, err := os.OpenFile("bri-devices.json", os.O_CREATE, 0644)
@@ -28,11 +31,13 @@ func (d *Devices) Init() error {
 }
 
 func (d *Devices) Add(address []byte, new Device) error {
-	d.data = append(d.data, new)
-
 	for _, device := range d.data {
-		log.Printf("%x\n", device.Address)
+		if bytes.Equal(device.Address, address) {
+			return ErrDuplicateDevice
+		}
 	}
+
+	d.data = append(d.data, new)
 	return nil
 }
 

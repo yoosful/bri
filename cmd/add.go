@@ -44,21 +44,21 @@ var addCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		conf.DeviceData.Add(h, conf.Device{
+		err = conf.DeviceData.Add(h, conf.Device{
 			Address: h,
 			Dtype:   dtype,
 			Did:     id,
 			Usage:   make(map[string]int),
 			Status:  false,
 		})
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		conf.DeviceData.Dump()
 	},
 }
-
-var (
-	dtype string
-	did   string
-)
 
 func init() {
 	configCmd.AddCommand(addCmd)
