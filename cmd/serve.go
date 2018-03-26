@@ -26,7 +26,8 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/pseohy/bri/serve"
+	"github.com/pseohy/bri/conf"
+	"github.com/pseohy/bri/serve"
 	"github.com/spf13/cobra"
 )
 
@@ -46,13 +47,13 @@ Store usage data with encryption.`,
 		fs := http.FileServer(http.Dir("static/"))
 		http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-		Devices = append(Devices, Device{Id: "1", Type: "fridge", On: true})
-		Devices = append(Devices, Device{Id: "2", Type: "radio", On: false})
-		Devices = append(Devices, Device{Id: "3", Type: "pc", On: true})
-		Devices = append(Devices, Device{Id: "4", Type: "laptop", On: false})
-		Devices = append(Devices, Device{Id: "5", Type: "laptop", On: true})
+		conf.DeviceData.EncryptAndAdd("1", "fridge", true)
+		conf.DeviceData.EncryptAndAdd("2", "radio", false)
+		conf.DeviceData.EncryptAndAdd("3", "pc", true)
+		conf.DeviceData.EncryptAndAdd("4", "laptop", false)
+		conf.DeviceData.EncryptAndAdd("5", "laptop", true)
 
-		router := NewRouter()
+		router := serve.NewRouter()
 
 		log.Fatal(http.ListenAndServe(":4000", router))
 	},

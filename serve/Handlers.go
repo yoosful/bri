@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/pseohy/bri/conf"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +17,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetDevices(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(Devices)
+	json.NewEncoder(w).Encode(conf.DeviceData.Data)
 
 	fmt.Println("Get info of all devices")
 
@@ -23,47 +25,46 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 
 func GetDevice(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	for _, device := range Devices {
-		if device.Id == params["id"] {
+	for _, device := range conf.DeviceData.Data {
+		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
 			json.NewEncoder(w).Encode(device)
-			fmt.Println("Get info of ", device.Type, "with id ", device.Id)
+			fmt.Println("Get info of ", device.Dtype, "with id ", device.Did)
 			return
 		}
 	}
 	json.NewEncoder(w).Encode(&Device{})
-
 }
 
 func CreateDevice(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	for _, device := range Devices {
-		if device.Id == params["id"] {
-			fmt.Println(device.Type, "with id ", device.Id, " already exists")
+	for _, device := range conf.DeviceData.Data {
+		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
+			fmt.Println(device.Dtype, "with id ", device.Did, " already exists")
 			return
 		}
-		json.NewEncoder(w).Encode(Devices)
+		json.NewEncoder(w).Encode(conf.DeviceData.Data)
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	var device Device
+	var device conf.Device
 	_ = json.NewDecoder(r.Body).Decode(&device)
-	device.Id = params["id"]
-	device.Type = params["type"]
-	Devices = append(Devices, device)
-	json.NewEncoder(w).Encode(Devices)
+	id, _ := strconv.ParseInt(params["did"], 10, 64)
+	device.Did = id
+	device.Dtype = params["dtype"]
+	conf.DeviceData.Data = append(conf.DeviceData.Data, device)
+	json.NewEncoder(w).Encode(conf.DeviceData.Data)
 
-	fmt.Println("Add ", device.Type, "with id ", device.Id)
+	fmt.Println("Add ", device.Dtype, "with id ", device.Did)
 }
 
 func DeleteDevice(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	for index, device := range Devices {
-		if device.Id == params["id"] {
-			Devices = append(Devices[:index], Devices[index+1:]...)
-			fmt.Println("Remove ", device.Type, "with id ", device.Id)
+	for index, device := range conf.DeviceData.Data {
+		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
+			conf.DeviceData.Data = append(conf.DeviceData.Data[:index], conf.DeviceData.Data[index+1:]...)
+			fmt.Println("Remove ", device.Dtype, "with id ", device.Did)
 			break
 		}
-		json.NewEncoder(w).Encode(Devices)
+		json.NewEncoder(w).Encode(conf.DeviceData.Data)
 	}
-
 }
