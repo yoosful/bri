@@ -21,8 +21,12 @@
 package cmd
 
 import (
-	"fmt"
+	"database/sql"
+	"log"
+	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/pseohy/bri/serve"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +37,24 @@ var serveCmd = &cobra.Command{
 	Long: `Run server that collects data from authenticated IOT devices.
 Store usage data with encryption.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
+		db, err := sql.Open("mysql", "root:9159/testdb")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+
+		fs := http.FileServer(http.Dir("static/"))
+		http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+		Devices = append(Devices, Device{Id: "1", Type: "fridge", On: true})
+		Devices = append(Devices, Device{Id: "2", Type: "radio", On: false})
+		Devices = append(Devices, Device{Id: "3", Type: "pc", On: true})
+		Devices = append(Devices, Device{Id: "4", Type: "laptop", On: false})
+		Devices = append(Devices, Device{Id: "5", Type: "laptop", On: true})
+
+		router := NewRouter()
+
+		log.Fatal(http.ListenAndServe(":4000", router))
 	},
 }
 
