@@ -29,19 +29,19 @@ var routes = Routes{
 	Route{
 		"GetDevice",
 		"GET",
-		"/device/{id}",
+		"/device/{did}",
 		GetDevice,
 	},
 	Route{
 		"CreateDevice",
 		"POST",
-		"/device/{id}",
+		"/device/{did}",
 		CreateDevice,
 	},
 	Route{
 		"DeleteDevice",
 		"DELETE",
-		"/device/{id}",
+		"/device/{did}",
 		GetDevice,
 	},
 }
