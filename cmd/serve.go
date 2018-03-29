@@ -37,8 +37,9 @@ type Page struct {
 }
 
 var (
-	t       *template.Template
-	content template.HTML
+	t          *template.Template
+	content    template.HTML
+	deviceChan = make(chan int, 1)
 )
 
 // serveCmd represents the serve command
@@ -82,6 +83,19 @@ func displayDevices(w http.ResponseWriter, r *http.Request) {
 		Content: content,
 	}
 	t.ExecuteTemplate(w, "index.html", p)
+
+	go func() {
+		for {
+			select {
+			case <-deviceChan:
+				var b bytes.Buffer
+				t.ExecuteTemplate(&b, "device.html", &conf.DeviceData)
+				content = template.HTML(b.String())
+			default:
+				continue
+			}
+		}
+	}()
 }
 
 func deviceHandler(w http.ResponseWriter, r *http.Request) {
@@ -117,4 +131,7 @@ func deviceHandler(w http.ResponseWriter, r *http.Request) {
 
 	conf.DeviceData.Update(h, d)
 	conf.DeviceData.Dump()
+
+	/* send a signal if new device message arrives. */
+	deviceChan <- 1
 }
