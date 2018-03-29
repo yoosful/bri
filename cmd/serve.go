@@ -44,9 +44,6 @@ Store usage data with encryption.`,
 		}
 		defer db.Close()
 
-		fs := http.FileServer(http.Dir("static/"))
-		http.Handle("/static/", http.StripPrefix("/static/", fs))
-
 		conf.DeviceData.EncryptAndAdd("1", "fridge", true)
 		conf.DeviceData.EncryptAndAdd("2", "radio", false)
 		conf.DeviceData.EncryptAndAdd("3", "pc", true)
@@ -54,8 +51,11 @@ Store usage data with encryption.`,
 		conf.DeviceData.EncryptAndAdd("5", "laptop", true)
 
 		router := serve.NewRouter()
+		router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
+		// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("css"))))
+		http.Handle("/", router)
 
-		log.Fatal(http.ListenAndServe(":4000", router))
+		log.Fatal(http.ListenAndServe(":4000", nil))
 	},
 }
 

@@ -12,15 +12,19 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("../templates/index.html"))
-	tmpl.ExecuteTemplate(w, "index.html", nil)
+
+	tmpl := template.Must(template.ParseFiles("static/templates/index.html"))
+	tmpl.ExecuteTemplate(w, "index.html", conf.DeviceData.Data)
 }
 
 func GetDevices(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(conf.DeviceData.Data)
+	// json.NewEncoder(w).Encode(conf.DeviceData.Data)
 
 	fmt.Println("Get info of all devices")
 
+	tmpl := template.Must(template.ParseFiles("static/templates/device.html"))
+
+	tmpl.ExecuteTemplate(w, "device.html", conf.DeviceData.Data)
 }
 
 func GetDevice(w http.ResponseWriter, r *http.Request) {
