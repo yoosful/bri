@@ -13,7 +13,7 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 
-	tmpl := template.Must(template.ParseFiles("static/templates/index.html"))
+	tmpl := template.Must(template.ParseFiles("templates/index.html"))
 	tmpl.ExecuteTemplate(w, "index.html", conf.DeviceData.Data)
 }
 
@@ -22,7 +22,7 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Get info of all devices")
 
-	tmpl := template.Must(template.ParseFiles("static/templates/device.html"))
+	tmpl := template.Must(template.ParseFiles("templates/device.html"))
 
 	tmpl.ExecuteTemplate(w, "device.html", conf.DeviceData.Data)
 }

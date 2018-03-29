@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"database/sql"
+	"html/template"
 	"log"
 	"net/http"
 
@@ -29,6 +30,18 @@ import (
 	"github.com/pseohy/bri/conf"
 	"github.com/pseohy/bri/serve"
 	"github.com/spf13/cobra"
+)
+
+type Page struct {
+	Content template.HTML
+}
+
+var (
+	t          *template.Template
+	content    template.HTML
+	deviceChan = make(chan int, 1)
+
+	debug bool
 )
 
 // serveCmd represents the serve command
@@ -51,8 +64,9 @@ Store usage data with encryption.`,
 		conf.DeviceData.EncryptAndAdd("5", "laptop", true)
 
 		router := serve.NewRouter()
-		router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
-		// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("css"))))
+
+		http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+
 		http.Handle("/", router)
 
 		log.Fatal(http.ListenAndServe(":4000", nil))
@@ -61,7 +75,6 @@ Store usage data with encryption.`,
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
