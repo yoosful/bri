@@ -27,6 +27,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
@@ -62,9 +63,9 @@ Store usage data with encryption.`,
 }
 
 func init() {
-	t = template.Must(template.ParseFiles("templates/index.html",
-		"templates/device.html"))
-
+	t = template.Must(template.New("bri").Funcs(template.FuncMap{
+		"isTurnedOn": IsTurnedOn,
+	}).ParseFiles("templates/index.html", "templates/device.html"))
 	rootCmd.AddCommand(serveCmd)
 
 	// Here you will define your flags and configuration settings.
@@ -92,6 +93,7 @@ func displayDevices(w http.ResponseWriter, r *http.Request) {
 				t.ExecuteTemplate(&b, "device.html", &conf.DeviceData)
 				content = template.HTML(b.String())
 			default:
+				time.Sleep(time.Second)
 				continue
 			}
 		}
@@ -134,4 +136,14 @@ func deviceHandler(w http.ResponseWriter, r *http.Request) {
 
 	/* send a signal if new device message arrives. */
 	deviceChan <- 1
+}
+
+func IsTurnedOn(stauts bool) template.HTML {
+	if stauts == true {
+		return template.HTML(`<span style="color:green;
+float:right;">&#11044;</span>`)
+	} else {
+		return template.HTML(`<span style="color:red;
+float:right;">&#11044;</span>`)
+	}
 }
