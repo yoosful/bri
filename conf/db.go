@@ -51,8 +51,9 @@ func (d *Devices) Update(address []byte, new Device) error {
 	}
 
 	if i < len(d.Data) {
-		d.Data = append(d.Data[:i], d.Data[i+1:]...)
-		d.Data = append(d.Data, new)
+		l, r := d.Data[:i], d.Data[i+1:]
+		d.Data = append(l, new)
+		d.Data = append(d.Data, r...)
 	} else {
 		log.Println("No matching address")
 	}
