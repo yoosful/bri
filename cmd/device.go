@@ -99,7 +99,7 @@ func init() {
 	rootCmd.AddCommand(deviceCmd)
 
 	deviceCmd.Flags().StringVarP(&device_dtype, "type", "t", "", "Device type")
-	deviceCmd.Flags().StringVarP(&device_did, "did", "i", "", "Device serial no.")
+	deviceCmd.Flags().StringVarP(&device_did, "id", "i", "", "Device serial no.")
 	deviceCmd.Flags().StringVarP(&device_uid, "user", "u", "", "User ID")
 	deviceCmd.Flags().StringVarP(&devide_msg, "msg", "m", "on", "Message")
 
