@@ -23,7 +23,6 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -64,7 +63,6 @@ Only data from the authenticated devices are collected`,
 		}
 
 		jsonDmsg, err := json.Marshal(&dmsg)
-		fmt.Println(string(jsonDmsg))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -72,20 +70,12 @@ Only data from the authenticated devices are collected`,
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonDmsg))
 		req.Header.Set("Cnotent-type", "application/json")
 
-		fmt.Println(req.Header)
-		fmt.Println(req.Body)
-
 		client := http.Client{}
 		resp, err := client.Do(req)
 		if err != nil {
 			panic(err)
 		}
 		defer resp.Body.Close()
-
-		fmt.Println(resp.Status)
-		fmt.Println(resp.Header)
-		body, _ := ioutil.ReadAll(resp.Body)
-		fmt.Println(string(body))
 	},
 }
 

@@ -100,7 +100,7 @@ func displayDevices(w http.ResponseWriter, r *http.Request) {
 
 func deviceHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	log.Println("Received usage message")
+	log.Println("A new message arrived")
 
 	var dmsg DeviceMsg
 	err := decoder.Decode(&dmsg)
