@@ -26,33 +26,33 @@ func (d *Devices) Init() error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	json.Unmarshal(raw, &d.data)
+	json.Unmarshal(raw, &d.Data)
 	return nil
 }
 
 func (d *Devices) Add(address []byte, new Device) error {
-	for _, device := range d.data {
+	for _, device := range d.Data {
 		if bytes.Equal(device.Address, address) {
 			return ErrDuplicateDevice
 		}
 	}
 
-	d.data = append(d.data, new)
+	d.Data = append(d.Data, new)
 	return nil
 }
 
 func (d *Devices) Update(address []byte, new Device) error {
 	i := 0
-	for _, device := range d.data {
+	for _, device := range d.Data {
 		if bytes.Equal(device.Address, address) {
 			break
 		}
 		i++
 	}
 
-	if i < len(d.data) {
-		d.data = append(d.data[:i], d.data[i+1:]...)
-		d.data = append(d.data, new)
+	if i < len(d.Data) {
+		d.Data = append(d.Data[:i], d.Data[i+1:]...)
+		d.Data = append(d.Data, new)
 	} else {
 		log.Println("No matching address")
 	}
@@ -62,15 +62,15 @@ func (d *Devices) Update(address []byte, new Device) error {
 
 func (d *Devices) Delete(address []byte) error {
 	i := 0
-	for i, device := range d.data {
+	for i, device := range d.Data {
 		if bytes.Equal(device.Address, address) {
 			break
 		}
 		i++
 	}
 
-	if i < len(d.data) {
-		d.data = append(d.data[:i], d.data[i+1:]...)
+	if i < len(d.Data) {
+		d.Data = append(d.Data[:i], d.Data[i+1:]...)
 	} else {
 		log.Println("No matching address")
 	}
@@ -79,7 +79,7 @@ func (d *Devices) Delete(address []byte) error {
 }
 
 func (d *Devices) Dump() error {
-	bytes, err := json.Marshal(&d.data)
+	bytes, err := json.Marshal(&d.Data)
 	if err != nil {
 		log.Fatal(err)
 	}

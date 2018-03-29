@@ -18,7 +18,7 @@ type Device struct {
 }
 
 type Devices struct {
-	data []Device
+	Data []Device
 }
 
 func Checksum(dtype, did string) ([]byte, error) {
