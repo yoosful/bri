@@ -21,9 +21,21 @@
 package cmd
 
 import (
-	"fmt"
+	"bytes"
+	"html/template"
+	"net/http"
 
+	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
+)
+
+type Page struct {
+	Content template.HTML
+}
+
+var (
+	t       *template.Template
+	content template.HTML
 )
 
 // serveCmd represents the serve command
@@ -33,11 +45,21 @@ var serveCmd = &cobra.Command{
 	Long: `Run server that collects data from authenticated IOT devices.
 Store usage data with encryption.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
+		http.Handle("/css/", http.StripPrefix("/css/",
+			http.FileServer(http.Dir("static"))))
+		var b bytes.Buffer
+		t.ExecuteTemplate(&b, "device.html", &conf.DeviceData)
+		content = template.HTML(b.String())
+
+		http.HandleFunc("/", displayDevices)
+		http.ListenAndServe(":8080", nil)
 	},
 }
 
 func init() {
+	t = template.Must(template.ParseFiles("templates/index.html",
+		"templates/device.html"))
+
 	rootCmd.AddCommand(serveCmd)
 
 	// Here you will define your flags and configuration settings.
@@ -49,4 +71,11 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func displayDevices(w http.ResponseWriter, r *http.Request) {
+	p := &Page{
+		Content: content,
+	}
+	t.ExecuteTemplate(w, "index.html", p)
 }
