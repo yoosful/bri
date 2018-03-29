@@ -27,7 +27,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -35,8 +34,8 @@ import (
 
 type DeviceMsg struct {
 	Dtype string `json:"dtype"`
-	Did   int64  `json:"did"`
-	Uid   int64  `json:"uid"`
+	Did   string `json:"did"`
+	Uid   string `json:"uid"`
 	Msg   string `json:"msg"`
 }
 
@@ -55,31 +54,26 @@ var deviceCmd = &cobra.Command{
 Only data from the authenticated devices are collected`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		url := "http://localhost:8080"
-
-		didMsg, err := strconv.ParseInt(device_did, 10, 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-		uidMsg, err := strconv.ParseInt(device_uid, 10, 64)
-		if err != nil {
-			log.Fatal(err)
-		}
+		url := "http://localhost:8080/device"
 
 		var dmsg = DeviceMsg{
 			Dtype: device_dtype,
-			Did:   didMsg,
-			Uid:   uidMsg,
+			Did:   device_did,
+			Uid:   device_uid,
 			Msg:   devide_msg,
 		}
 
 		jsonDmsg, err := json.Marshal(&dmsg)
+		fmt.Println(string(jsonDmsg))
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonDmsg))
 		req.Header.Set("Cnotent-type", "application/json")
+
+		fmt.Println(req.Header)
+		fmt.Println(req.Body)
 
 		client := http.Client{}
 		resp, err := client.Do(req)

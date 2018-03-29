@@ -1,5 +1,5 @@
 {{range $index, $device := .Data}}
 <p class="devices">
-  {{$device.Address | printf "%x"}}&mdash;{{$device.Dtype}}, {{$device.Did}}
+  {{$device.Address | printf "%x"}}&mdash;{{$device.Dtype}}, {{$device.Did}}&mdash;{{$device.Status}}
 </p>
 {{end}}

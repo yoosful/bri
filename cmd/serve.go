@@ -22,8 +22,11 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"html/template"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
@@ -52,6 +55,7 @@ Store usage data with encryption.`,
 		content = template.HTML(b.String())
 
 		http.HandleFunc("/", displayDevices)
+		http.HandleFunc("/device", deviceHandler)
 		http.ListenAndServe(":8080", nil)
 	},
 }
@@ -78,4 +82,39 @@ func displayDevices(w http.ResponseWriter, r *http.Request) {
 		Content: content,
 	}
 	t.ExecuteTemplate(w, "index.html", p)
+}
+
+func deviceHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	log.Println("Received usage message")
+
+	var dmsg DeviceMsg
+	err := decoder.Decode(&dmsg)
+	if err != nil {
+		panic(err)
+	}
+	defer r.Body.Close()
+
+	h, err := conf.Checksum(dmsg.Dtype, dmsg.Did)
+	if err != nil {
+		panic(err)
+	}
+
+	didInt, err := strconv.ParseInt(dmsg.Did, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	d := conf.Device{
+		Address: h,
+		Dtype:   dmsg.Dtype,
+		Did:     didInt,
+		Status:  true,
+		Usage: map[string]int{
+			dmsg.Uid: 1000,
+		},
+	}
+
+	conf.DeviceData.Update(h, d)
+	conf.DeviceData.Dump()
 }
