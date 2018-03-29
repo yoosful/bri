@@ -23,6 +23,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -119,11 +120,20 @@ func deviceHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	var status bool
+	if dmsg.Msg == "on" {
+		status = true
+	} else if dmsg.Msg == "off" {
+		status = false
+	} else {
+		panic(errors.New("Unexpected message"))
+	}
+
 	d := conf.Device{
 		Address: h,
 		Dtype:   dmsg.Dtype,
 		Did:     didInt,
-		Status:  true,
+		Status:  status,
 		Usage: map[string]int{
 			dmsg.Uid: 1000,
 		},
