@@ -27,6 +27,12 @@ var routes = Routes{
 		GetDevices,
 	},
 	Route{
+		"GetUser",
+		"GET",
+		"/user",
+		GetUser,
+	},
+	Route{
 		"GetDevice",
 		"GET",
 		"/device/{did}",

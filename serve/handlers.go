@@ -27,6 +27,16 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, "device.html", conf.DeviceData.Data)
 }
 
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	// json.NewEncoder(w).Encode(conf.DeviceData.Data)
+
+	fmt.Println("Get info of all devices")
+
+	tmpl := template.Must(template.ParseFiles("templates/user.html"))
+
+	tmpl.ExecuteTemplate(w, "user.html", conf.DeviceData.Data)
+}
+
 func GetDevice(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	for _, device := range conf.DeviceData.Data {
