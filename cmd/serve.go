@@ -63,10 +63,12 @@ Store usage data with encryption.`,
 		conf.DeviceData.EncryptAndAdd("4", "laptop", false)
 		conf.DeviceData.EncryptAndAdd("5", "laptop", true)
 
-		router := serve.NewRouter()
-
 		http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+		http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js"))))
+		http.Handle("/plugins/", http.StripPrefix("/plugins/", http.FileServer(http.Dir("plugins"))))
+		http.Handle("/bootstrap/", http.StripPrefix("/bootstrap/", http.FileServer(http.Dir("bootstrap"))))
 
+		router := serve.NewRouter()
 		http.Handle("/", router)
 
 		log.Fatal(http.ListenAndServe(":4000", nil))
