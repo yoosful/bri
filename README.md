@@ -57,6 +57,18 @@ Use "bri [command] --help" for more information about a command.
 ### Add and delete devices
 Addition and deletion of a device is easy. You can add devices with `config` command.
 ```
-$ ./bri config add <--type|-t> <dtype> <--id|-i> <type>
-$ ./bri config delete <--type|-t> <dtype> <--id|-i> <type>
+$ ./bri config add <--type|-t> <dtype> <--id|-i> <did>
+$ ./bri config delete <--type|-t> <dtype> <--id|-i> <did>
+```
+
+### Run server
+You can run the server by running simple command:
+```
+$ ./bri serve
+```
+
+### Simulate device
+You can simulate message generated from user or device:
+```
+$ ./bri device <--type|-t> <dtype> <--id|-i> <did> <--user|-user> <user> <--msg|-m> <on|off>
 ```
