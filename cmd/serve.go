@@ -31,6 +31,7 @@ import (
 
 	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 type Page struct {
@@ -41,6 +42,8 @@ var (
 	t          *template.Template
 	content    template.HTML
 	deviceChan = make(chan int, 1)
+
+	debug bool
 )
 
 // serveCmd represents the serve command
@@ -64,19 +67,14 @@ Store usage data with encryption.`,
 
 func init() {
 	t = template.Must(template.New("bri").Funcs(template.FuncMap{
-		"isTurnedOn": IsTurnedOn,
+		"isTurnedOn":   IsTurnedOn,
+		"deviceDetail": DeviceDetail,
 	}).ParseFiles("templates/index.html", "templates/device.html"))
 	rootCmd.AddCommand(serveCmd)
 
-	// Here you will define your flags and configuration settings.
+	serveCmd.Flags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlag("debug", serveCmd.Flags().Lookup("debug"))
 }
 
 func displayDevices(w http.ResponseWriter, r *http.Request) {
@@ -145,5 +143,13 @@ float:right;">&#11044;</span>`)
 	} else {
 		return template.HTML(`<span style="color:red;
 float:right;">&#11044;</span>`)
+	}
+}
+
+func DeviceDetail(d conf.Device) template.HTML {
+	if debug {
+		return template.HTML(d.Dtype + " " + strconv.FormatInt(d.Did, 10))
+	} else {
+		return template.HTML("")
 	}
 }
