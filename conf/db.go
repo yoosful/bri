@@ -110,7 +110,7 @@ func (d *Devices) UpdateStatus(address []byte, user string, msg string) error {
 
 func (d *Devices) Delete(address []byte) error {
 	i := 0
-	for i, device := range d.Data {
+	for _, device := range d.Data {
 		if bytes.Equal(device.Address, address) {
 			break
 		}
