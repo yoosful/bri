@@ -67,7 +67,7 @@ Only data from the authenticated devices are collected`,
 		}
 
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonDmsg))
-		req.Header.Set("Cnotent-type", "application/json")
+		req.Header.Set("Content-type", "application/json")
 
 		client := http.Client{}
 		resp, err := client.Do(req)
