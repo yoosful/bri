@@ -60,14 +60,14 @@ Store usage data with encryption.`,
 		http.Handle("/bootstrap/", http.StripPrefix("/bootstrap/", http.FileServer(http.Dir("bootstrap/"))))
 
 		router := serve.NewRouter()
-		router.HandleFunc("/device", CreateDevice).Methods("POST")
+		router.HandleFunc("/device", UpdatDeviceStatus).Methods("POST")
 		http.Handle("/", router)
 
 		log.Fatal(http.ListenAndServe(":4000", nil))
 	},
 }
 
-func CreateDevice(w http.ResponseWriter, r *http.Request) {
+func UpdatDeviceStatus(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	log.Println("A new message arrived")
 

@@ -52,7 +52,7 @@ var deviceCmd = &cobra.Command{
 Only data from the authenticated devices are collected`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		url := "http://localhost:8080/device"
+		url := "http://localhost:4000/device"
 
 		var dmsg = DeviceMsg{
 			Dtype: device_dtype,
