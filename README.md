@@ -61,6 +61,13 @@ $ ./bri config add <--type|-t> <dtype> <--id|-i> <did>
 $ ./bri config delete <--type|-t> <dtype> <--id|-i> <did>
 ```
 
+### Add and delete user
+Addition and deletion of a user also can be done easily.
+```
+$ ./bri config user [-d] <-i Name> <-i Phone>
+```
+* `-d`: If this flag is set, this command will delete corresponding user.
+
 ### Run server
 You can run the server by running simple command:
 ```

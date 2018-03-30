@@ -41,6 +41,9 @@ var (
 	dtype string
 	did   string
 	drate int
+
+	uInfo   []string
+	uDelete bool
 )
 
 func init() {

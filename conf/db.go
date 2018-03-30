@@ -13,6 +13,7 @@ import (
 
 var (
 	DeviceData Devices
+	UserData   Users
 )
 
 func (d *Devices) Init() error {
@@ -120,7 +121,7 @@ func (d *Devices) Delete(address []byte) error {
 	if i < len(d.Data) {
 		d.Data = append(d.Data[:i], d.Data[i+1:]...)
 	} else {
-		log.Println("No matching address")
+		return ErrNoMathingDevice
 	}
 
 	return nil
@@ -133,5 +134,102 @@ func (d *Devices) Dump() error {
 	}
 
 	ioutil.WriteFile("bri-devices.json", bytes, 0666)
+	return nil
+}
+
+func (u *Users) Init() error {
+	file, err := os.OpenFile("bri-users.json", os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	raw, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	json.Unmarshal(raw, &u.Data)
+
+	return nil
+}
+
+func (u *Users) EncryptAndAdd(name, phone string) error {
+	h, err := EncryptUser(name, phone)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	for _, user := range u.Data {
+		if bytes.Equal(user.Address, h) {
+			return ErrDuplicateUser
+		}
+	}
+
+	u.Data = append(u.Data, User{
+		Address: h,
+		Name:    name,
+		Phone:   phone,
+		Usage:   map[string]int{},
+	})
+
+	return nil
+}
+
+func (u *Users) Delete(address []byte) error {
+	i := 0
+	for _, user := range u.Data {
+		if bytes.Equal(user.Address, address) {
+			break
+		}
+		i++
+	}
+
+	if i < len(u.Data) {
+		u.Data = append(u.Data[:i], u.Data[i+1:]...)
+	} else {
+		return ErrNoMathingUser
+	}
+
+	return nil
+}
+
+// UpdateUserUsage updage usage info of a user with device id and
+// the amount of time turned on.
+func (u *Users) UpdateUserUsage(address []byte, device string, amount int) error {
+	i := 0
+	for _, user := range u.Data {
+		if bytes.Equal(user.Address, address) {
+			break
+		}
+		i++
+	}
+
+	if i >= len(u.Data) {
+		return ErrNoMathingUser
+	}
+
+	i = 0
+	for k, _ := range u.Data[i].Usage {
+		if k == device {
+			u.Data[i].Usage[k] += amount
+			break
+		}
+		i++
+	}
+
+	if i >= len(u.Data) {
+		u.Data[i].Usage[device] = amount
+	}
+
+	return nil
+}
+
+func (u *Users) Dump() error {
+	bytes, err := json.Marshal(&u.Data)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ioutil.WriteFile("bri-users.json", bytes, 0666)
 	return nil
 }

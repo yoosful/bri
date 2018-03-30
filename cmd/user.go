@@ -18,18 +18,57 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package cmd
 
 import (
-	"github.com/pseohy/bri/cmd"
+	"log"
+
 	"github.com/pseohy/bri/conf"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-func main() {
-	cmd.Execute()
+// userCmd represents the user command
+var userCmd = &cobra.Command{
+	Use:   "user",
+	Short: "Manage users",
+	Long:  `Add or delete users in an encrypted way.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		var err error
+		if uDelete {
+			/* delete a user from the database */
+			h, err := conf.EncryptUser(uInfo[0], uInfo[1])
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			err = conf.UserData.Delete(h)
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			/* add a user to the database */
+			err = conf.UserData.EncryptAndAdd(uInfo[0], uInfo[1])
+			if err != nil {
+				log.Fatal(err)
+			}
+
+		}
+		err = conf.UserData.Dump()
+		if err != nil {
+			log.Fatal(err)
+		}
+	},
 }
 
 func init() {
-	conf.DeviceData.Init()
-	conf.UserData.Init()
+	configCmd.AddCommand(userCmd)
+
+	userCmd.Flags().StringSliceVarP(&uInfo, "info", "i",
+		[]string{"", ""}, "User name and phone number")
+	userCmd.Flags().BoolVarP(&uDelete, "delete", "d",
+		false, "Delete if specified")
+
+	viper.BindPFlag("user", userCmd.Flags().Lookup("user"))
+	viper.BindPFlag("delete", userCmd.Flags().Lookup("delete"))
 }
