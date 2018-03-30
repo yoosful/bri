@@ -23,11 +23,8 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -35,8 +32,8 @@ import (
 
 type DeviceMsg struct {
 	Dtype string `json:"dtype"`
-	Did   int64  `json:"did"`
-	Uid   int64  `json:"uid"`
+	Did   string `json:"did"`
+	Uid   string `json:"uid"`
 	Msg   string `json:"msg"`
 }
 
@@ -55,21 +52,12 @@ var deviceCmd = &cobra.Command{
 Only data from the authenticated devices are collected`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		url := "http://localhost:8080"
-
-		didMsg, err := strconv.ParseInt(device_did, 10, 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-		uidMsg, err := strconv.ParseInt(device_uid, 10, 64)
-		if err != nil {
-			log.Fatal(err)
-		}
+		url := "http://localhost:8080/device"
 
 		var dmsg = DeviceMsg{
 			Dtype: device_dtype,
-			Did:   didMsg,
-			Uid:   uidMsg,
+			Did:   device_did,
+			Uid:   device_uid,
 			Msg:   devide_msg,
 		}
 
@@ -87,11 +75,6 @@ Only data from the authenticated devices are collected`,
 			panic(err)
 		}
 		defer resp.Body.Close()
-
-		fmt.Println(resp.Status)
-		fmt.Println(resp.Header)
-		body, _ := ioutil.ReadAll(resp.Body)
-		fmt.Println(string(body))
 	},
 }
 
@@ -99,7 +82,7 @@ func init() {
 	rootCmd.AddCommand(deviceCmd)
 
 	deviceCmd.Flags().StringVarP(&device_dtype, "type", "t", "", "Device type")
-	deviceCmd.Flags().StringVarP(&device_did, "did", "i", "", "Device serial no.")
+	deviceCmd.Flags().StringVarP(&device_did, "id", "i", "", "Device serial no.")
 	deviceCmd.Flags().StringVarP(&device_uid, "user", "u", "", "User ID")
 	deviceCmd.Flags().StringVarP(&devide_msg, "msg", "m", "on", "Message")
 

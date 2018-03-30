@@ -146,8 +146,11 @@
 
                                             <td>{{.Did}}</td>
                                             <td >{{.Dtype}}</td>
-                                            <td>{{.Status}}</td>
-                                            <td><span class="text-success">{{.Address}}</span></td>
+                                            <td>
+                                              {{if .Status}}<span style="color:green;float:right;">&#11044;</span>{{end}}
+                                              {{if not .Status}}<span style="color:red;float:right;">&#11044;</span>{{end}}
+                                            </td>
+                                            <td><span class="text-success">{{.Address| printf "%x"}}</span></td>
                                         </tr>
                                         {{end}}
 

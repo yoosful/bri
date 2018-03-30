@@ -15,6 +15,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.ParseFiles("templates/index.html"))
 	tmpl.ExecuteTemplate(w, "index.html", conf.DeviceData.Data)
+
 }
 
 func GetDevices(w http.ResponseWriter, r *http.Request) {
@@ -46,29 +47,7 @@ func GetDevice(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	json.NewEncoder(w).Encode(&Device{})
-}
-
-func CreateDevice(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	for _, device := range conf.DeviceData.Data {
-		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
-			fmt.Println(device.Dtype, "with id ", device.Did, " already exists")
-			return
-		}
-		json.NewEncoder(w).Encode(conf.DeviceData.Data)
-	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	var device conf.Device
-	_ = json.NewDecoder(r.Body).Decode(&device)
-	id, _ := strconv.ParseInt(params["did"], 10, 64)
-	device.Did = id
-	device.Dtype = params["dtype"]
-	conf.DeviceData.Data = append(conf.DeviceData.Data, device)
-	json.NewEncoder(w).Encode(conf.DeviceData.Data)
-
-	fmt.Println("Add ", device.Dtype, "with id ", device.Did)
+	json.NewEncoder(w).Encode(&conf.DeviceData.Data)
 }
 
 func DeleteDevice(w http.ResponseWriter, r *http.Request) {

@@ -38,12 +38,12 @@ var routes = Routes{
 		"/device/{did}",
 		GetDevice,
 	},
-	Route{
-		"CreateDevice",
-		"POST",
-		"/device/{did}",
-		CreateDevice,
-	},
+	// Route{
+	// 	"CreateDevice",
+	// 	"POST",
+	// 	"/device/{did}",
+	// 	CreateDevice,
+	// },
 	Route{
 		"DeleteDevice",
 		"DELETE",
