@@ -24,7 +24,7 @@ type Device struct {
 	Rate int `json:"rate"`
 
 	// Last accessed user
-	User string `,json:"user"`
+	User []byte `,json:"user"`
 }
 
 type Devices struct {

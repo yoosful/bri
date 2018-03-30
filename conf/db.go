@@ -4,6 +4,7 @@ package conf
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -66,7 +67,7 @@ func (d *Devices) Add(address []byte, new Device) error {
 	return nil
 }
 
-func (d *Devices) UpdateStatus(address []byte, user string, msg string) error {
+func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
 	i := 0
 
 	for _, device := range d.Data {
@@ -79,7 +80,7 @@ func (d *Devices) UpdateStatus(address []byte, user string, msg string) error {
 					log.Println("Already Turned On")
 					break
 				}
-				if user != d.Data[i].User {
+				if !bytes.Equal(d.Data[i].User, user) {
 					log.Println("Turned Off by a Different User?!")
 					break
 				} else {
@@ -193,9 +194,9 @@ func (u *Users) Delete(address []byte) error {
 	return nil
 }
 
-// UpdateUserUsage updage usage info of a user with device id and
+// UpdateUsage updage usage info of a user with device id and
 // the amount of time turned on.
-func (u *Users) UpdateUserUsage(address []byte, device string, amount int) error {
+func (u *Users) UpdateUsage(address []byte, device []byte, amount int) error {
 	i := 0
 	for _, user := range u.Data {
 		if bytes.Equal(user.Address, address) {
@@ -208,17 +209,17 @@ func (u *Users) UpdateUserUsage(address []byte, device string, amount int) error
 		return ErrNoMathingUser
 	}
 
-	i = 0
+	j := 0
 	for k, _ := range u.Data[i].Usage {
-		if k == device {
+		if k == hex.EncodeToString(device) {
 			u.Data[i].Usage[k] += amount
 			break
 		}
-		i++
+		j++
 	}
 
-	if i >= len(u.Data) {
-		u.Data[i].Usage[device] = amount
+	if j >= len(u.Data[i].Usage) {
+		u.Data[i].Usage[hex.EncodeToString(device)] = amount
 	}
 
 	return nil

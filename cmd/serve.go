@@ -82,7 +82,7 @@ func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	conf.DeviceData.UpdateStatus(h, "", dmsg.Msg)
+	conf.DeviceData.UpdateStatus(h, []byte{}, dmsg.Msg)
 
 	conf.DeviceData.Dump()
 
