@@ -86,6 +86,9 @@ func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
 				} else {
 					d.Data[i].Status = false
 					/* TODO: stop timer and store usage */
+
+					/* Dummy update */
+					UserData.UpdateUsage(user, address, 10)
 				}
 			} else {
 				// Turning on the device
