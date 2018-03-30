@@ -40,6 +40,7 @@ are encrypted.`,
 var (
 	dtype string
 	did   string
+	drate int
 )
 
 func init() {

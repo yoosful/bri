@@ -35,7 +35,7 @@ var addCmd = &cobra.Command{
 	Short: "Add a new device",
 	Long:  `Add a new device, encrypted with SHA256`,
 	Run: func(cmd *cobra.Command, args []string) {
-		h, err := conf.Checksum(dtype, did)
+		h, err := conf.EncryptDevice(dtype, did)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -48,8 +48,8 @@ var addCmd = &cobra.Command{
 			Address: h,
 			Dtype:   dtype,
 			Did:     id,
-			Usage:   make(map[string]int),
 			Status:  false,
+			Rate:    drate,
 		})
 
 		if err != nil {
@@ -65,7 +65,9 @@ func init() {
 
 	addCmd.Flags().StringVarP(&dtype, "type", "t", "", "Device type")
 	addCmd.Flags().StringVarP(&did, "id", "i", "", "Device serial no.")
+	addCmd.Flags().IntVarP(&drate, "rate", "r", 1, "Device payment rate")
 
 	viper.BindPFlag("type", addCmd.Flags().Lookup("type"))
 	viper.BindPFlag("id", addCmd.Flags().Lookup("id"))
+	viper.BindPFlag("rate", addCmd.Flags().Lookup("rate"))
 }

@@ -5,16 +5,15 @@ package conf
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
 )
 
-var DeviceData Devices
-
-var ErrDuplicateDevice = errors.New("Duplicate Device")
+var (
+	DeviceData Devices
+)
 
 func (d *Devices) Init() error {
 	file, err := os.OpenFile("bri-devices.json", os.O_CREATE, 0644)
@@ -32,7 +31,7 @@ func (d *Devices) Init() error {
 }
 
 func (d *Devices) EncryptAndAdd(did string, dtype string, status bool) error {
-	h, err := Checksum(dtype, did)
+	h, err := EncryptDevice(dtype, did)
 
 	for _, device := range d.Data {
 		if bytes.Equal(device.Address, h) {
@@ -50,7 +49,7 @@ func (d *Devices) EncryptAndAdd(did string, dtype string, status bool) error {
 		Dtype:   dtype,
 		Did:     didInt,
 		Status:  status,
-		Usage:   make(map[string]int),
+		Rate:    1,
 	})
 	return nil
 }
@@ -66,19 +65,43 @@ func (d *Devices) Add(address []byte, new Device) error {
 	return nil
 }
 
-func (d *Devices) Update(address []byte, new Device) error {
+func (d *Devices) UpdateStatus(address []byte, user string, msg string) error {
 	i := 0
+
 	for _, device := range d.Data {
 		if bytes.Equal(device.Address, address) {
+			isTurnedOn := d.Data[i].Status
+
+			if isTurnedOn {
+				// Turning off the device
+				if msg != "off" {
+					log.Println("Already Turned On")
+					break
+				}
+				if user != d.Data[i].User {
+					log.Println("Turned Off by a Different User?!")
+					break
+				} else {
+					d.Data[i].Status = false
+					/* TODO: stop timer and store usage */
+				}
+			} else {
+				// Turning on the device
+				if msg != "on" {
+					log.Println("Not Turned On Yet")
+					break
+				} else {
+					d.Data[i].User = user
+					d.Data[i].Status = true
+					/* TODO: trigger timer */
+				}
+			}
 			break
 		}
 		i++
 	}
 
-	if i < len(d.Data) {
-		d.Data = append(d.Data[:i], d.Data[i+1:]...)
-		d.Data = append(d.Data, new)
-	} else {
+	if i >= len(d.Data) {
 		log.Println("No matching address")
 	}
 

@@ -4,24 +4,35 @@ package conf
 
 import (
 	"crypto/sha256"
-	"errors"
 )
 
-var ErrInvalidArguments = errors.New("Invalid arguments")
-
+// Device represents a registered device
 type Device struct {
-	Address []byte         `json: "address"`
-	Dtype   string         `json: "dtype"`
-	Did     int64          `json: "did"`
-	Status  bool           `json: "status"`
-	Usage   map[string]int `,json: "usage"`
+	// Encrypted address
+	Address []byte `json: "address"`
+
+	// Device type
+	Dtype string `json: "dtype"`
+
+	// Device id
+	Did int64 `json: "did"`
+
+	// Divece status
+	Status bool `json: "status"`
+
+	// Device payment rate
+	Rate int `json:"rate"`
+
+	// Last accessed user
+	User string `,json:"user"`
 }
 
 type Devices struct {
 	Data []Device
 }
 
-func Checksum(dtype, did string) ([]byte, error) {
+// EncryptDevice encrypts a device using SHA256
+func EncryptDevice(dtype, did string) ([]byte, error) {
 	h := sha256.New()
 	src := make([]byte, 0, 256)
 
