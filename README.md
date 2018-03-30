@@ -77,5 +77,5 @@ $ ./bri serve
 ### Simulate device
 You can simulate message generated from user or device:
 ```
-$ ./bri device <--type|-t> <dtype> <--id|-i> <did> <--user|-user> <user> <--msg|-m> <on|off>
+$ ./bri device <--type|-t> <dtype> <--id|-i> <did> <--user|-u Name> <--user|-u Phone> <--msg|-m> <on|off>
 ```
