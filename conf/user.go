@@ -18,7 +18,7 @@ type User struct {
 	Phone string `json:"phone"`
 
 	// User usage summary
-	Usage map[string]int `json:"usage"`
+	Usage map[string]float64 `json:"usage"`
 }
 
 type Users struct {

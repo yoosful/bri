@@ -69,15 +69,17 @@ func (d *Devices) Add(address []byte, new Device) error {
 
 func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
 	i := 0
-
 	for _, device := range d.Data {
 		if bytes.Equal(device.Address, address) {
 			isTurnedOn := d.Data[i].Status
 
 			if isTurnedOn {
 				// Turning off the device
-				if msg != "off" {
+				if msg == "on" {
 					log.Println("Already Turned On")
+					break
+				} else if msg != "off" {
+					log.Println("Unexpected Message Arrived")
 					break
 				}
 				if !bytes.Equal(d.Data[i].User, user) {
@@ -85,20 +87,32 @@ func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
 					break
 				} else {
 					d.Data[i].Status = false
-					/* TODO: stop timer and store usage */
 
-					/* Dummy update */
-					UserData.UpdateUsage(user, address, 10)
+					// get active duration to update user's usage info
+					duration, err := GetDuration(Actives, address)
+					if err != nil {
+						panic(err)
+					}
+
+					UserData.UpdateUsage(user, address, duration.Seconds())
 				}
 			} else {
 				// Turning on the device
-				if msg != "on" {
+				if msg == "off" {
 					log.Println("Not Turned On Yet")
+					break
+				} else if msg != "on" {
+					log.Println("Unexpected Message Arrived")
 					break
 				} else {
 					d.Data[i].User = user
 					d.Data[i].Status = true
-					/* TODO: trigger timer */
+
+					// set device on time
+					err := SetOnTime(Actives, address)
+					if err != nil {
+						panic(err)
+					}
 				}
 			}
 			break
@@ -125,7 +139,7 @@ func (d *Devices) Delete(address []byte) error {
 	if i < len(d.Data) {
 		d.Data = append(d.Data[:i], d.Data[i+1:]...)
 	} else {
-		return ErrNoMathingDevice
+		return ErrNoMatchingDevice
 	}
 
 	return nil
@@ -173,7 +187,7 @@ func (u *Users) EncryptAndAdd(name, phone string) error {
 		Address: h,
 		Name:    name,
 		Phone:   phone,
-		Usage:   map[string]int{},
+		Usage:   map[string]float64{},
 	})
 
 	return nil
@@ -191,7 +205,7 @@ func (u *Users) Delete(address []byte) error {
 	if i < len(u.Data) {
 		u.Data = append(u.Data[:i], u.Data[i+1:]...)
 	} else {
-		return ErrNoMathingUser
+		return ErrNoMatchingUser
 	}
 
 	return nil
@@ -199,7 +213,7 @@ func (u *Users) Delete(address []byte) error {
 
 // UpdateUsage updage usage info of a user with device id and
 // the amount of time turned on.
-func (u *Users) UpdateUsage(address []byte, device []byte, amount int) error {
+func (u *Users) UpdateUsage(address []byte, device []byte, amount float64) error {
 	i := 0
 	for _, user := range u.Data {
 		if bytes.Equal(user.Address, address) {
@@ -209,7 +223,7 @@ func (u *Users) UpdateUsage(address []byte, device []byte, amount int) error {
 	}
 
 	if i >= len(u.Data) {
-		return ErrNoMathingUser
+		return ErrNoMatchingUser
 	}
 
 	j := 0

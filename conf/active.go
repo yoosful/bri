@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Actives holds runtime information of activated devices
 var Actives []Active
 
 // Record contains records of active devices
@@ -16,11 +17,36 @@ type Active struct {
 }
 
 func GetDuration(actives []Active, address []byte) (time.Duration, error) {
+	i := 0
 	for _, active := range actives {
 		if bytes.Equal(address, active.Address) {
-			return time.Since(active.On), nil
+			break
+		}
+		i++
+	}
+
+	if i < len(Actives) {
+		d := time.Since(Actives[i].On)
+		Actives = append(Actives[:i], Actives[i+1:]...)
+		return d, nil
+	}
+
+	// currently if there is no matching device, GetDuration
+	// will transparently return time.Duration(0)
+	return time.Duration(0), nil
+}
+
+func SetOnTime(actives []Active, address []byte) error {
+	for _, active := range actives {
+		if bytes.Equal(address, active.Address) {
+			return ErrUnexpectedBehavior
 		}
 	}
 
-	return time.Duration(0), ErrNoMathingDevice
+	Actives = append(Actives, Active{
+		Address: address,
+		On:      time.Now(),
+	})
+
+	return nil
 }
