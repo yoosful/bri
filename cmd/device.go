@@ -31,16 +31,16 @@ import (
 )
 
 type DeviceMsg struct {
-	Dtype string `json:"dtype"`
-	Did   string `json:"did"`
-	Uid   string `json:"uid"`
-	Msg   string `json:"msg"`
+	Dtype string   `json:"dtype"`
+	Did   string   `json:"did"`
+	UInfo []string `json:"uid"`
+	Msg   string   `json:"msg"`
 }
 
 var (
 	device_dtype string
 	device_did   string
-	device_uid   string
+	device_uInfo []string
 	devide_msg   string
 )
 
@@ -57,7 +57,7 @@ Only data from the authenticated devices are collected`,
 		var dmsg = DeviceMsg{
 			Dtype: device_dtype,
 			Did:   device_did,
-			Uid:   device_uid,
+			UInfo: device_uInfo,
 			Msg:   devide_msg,
 		}
 
@@ -83,7 +83,8 @@ func init() {
 
 	deviceCmd.Flags().StringVarP(&device_dtype, "type", "t", "", "Device type")
 	deviceCmd.Flags().StringVarP(&device_did, "id", "i", "", "Device serial no.")
-	deviceCmd.Flags().StringVarP(&device_uid, "user", "u", "", "User ID")
+	deviceCmd.Flags().StringSliceVarP(&device_uInfo, "user", "u",
+		[]string{"", ""}, "User name and phone number")
 	deviceCmd.Flags().StringVarP(&devide_msg, "msg", "m", "on", "Message")
 
 	viper.BindPFlag("type", deviceCmd.Flags().Lookup("type"))

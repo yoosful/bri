@@ -31,4 +31,5 @@ func main() {
 
 func init() {
 	conf.DeviceData.Init()
+	conf.UserData.Init()
 }

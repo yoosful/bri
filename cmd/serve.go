@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -39,9 +38,8 @@ type Page struct {
 }
 
 var (
-	t          *template.Template
-	content    template.HTML
-	deviceChan = make(chan int, 1)
+	t       *template.Template
+	content template.HTML
 
 	debug bool
 )
@@ -60,14 +58,14 @@ Store usage data with encryption.`,
 		http.Handle("/bootstrap/", http.StripPrefix("/bootstrap/", http.FileServer(http.Dir("bootstrap/"))))
 
 		router := serve.NewRouter()
-		router.HandleFunc("/device", UpdatDeviceStatus).Methods("POST")
+		router.HandleFunc("/device", UpdateDeviceStatus).Methods("POST")
 		http.Handle("/", router)
 
 		log.Fatal(http.ListenAndServe(":4000", nil))
 	},
 }
 
-func UpdatDeviceStatus(w http.ResponseWriter, r *http.Request) {
+func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	log.Println("A new message arrived")
 
@@ -78,60 +76,20 @@ func UpdatDeviceStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	h, err := conf.Checksum(dmsg.Dtype, dmsg.Did)
+	hDevice, err := conf.EncryptDevice(dmsg.Dtype, dmsg.Did)
 	if err != nil {
 		panic(err)
 	}
 
-	didInt, err := strconv.ParseInt(dmsg.Did, 10, 64)
+	hUuser, err := conf.EncryptUser(dmsg.UInfo[0], dmsg.UInfo[1])
 	if err != nil {
 		panic(err)
 	}
 
-	var status bool
-	if dmsg.Msg == "on" {
-		status = true
-	} else if dmsg.Msg == "off" {
-		status = false
-	} else {
-		panic(errors.New("Unexpected message"))
-	}
+	conf.DeviceData.UpdateStatus(hDevice, hUuser, dmsg.Msg)
 
-	d := conf.Device{
-		Address: h,
-		Dtype:   dmsg.Dtype,
-		Did:     didInt,
-		Status:  status,
-		Usage: map[string]int{
-			dmsg.Uid: 1000,
-		},
-	}
-
-	conf.DeviceData.Update(h, d)
 	conf.DeviceData.Dump()
-
-	/* send a signal if new device message arrives. */
-	deviceChan <- 1
-
-	// params := mux.Vars(r)
-	// for _, device := range conf.DeviceData.Data {
-	// 	if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
-	// 		fmt.Println(device.Dtype, "with id ", device.Did, " already exists")
-	// 		return
-	// 	}
-	// 	json.NewEncoder(w).Encode(conf.DeviceData.Data)
-	// }
-	// w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	// w.WriteHeader(http.StatusOK)
-	// var device conf.Device
-	// _ = json.NewDecoder(r.Body).Decode(&device)
-	// id, _ := strconv.ParseInt(params["did"], 10, 64)
-	// device.Did = id
-	// device.Dtype = params["dtype"]
-	// conf.DeviceData.Data = append(conf.DeviceData.Data, device)
-	// json.NewEncoder(w).Encode(conf.DeviceData.Data)
-	//
-	// fmt.Println("Add ", device.Dtype, "with id ", device.Did)
+	conf.UserData.Dump()
 }
 
 func DeviceDetail(d conf.Device) template.HTML {

@@ -34,7 +34,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a device",
 	Long:  `Delete a device from the configuration`,
 	Run: func(cmd *cobra.Command, args []string) {
-		h, err := conf.Checksum(dtype, did)
+		h, err := conf.EncryptDevice(dtype, did)
 		if err != nil {
 			log.Fatal(err)
 		}
