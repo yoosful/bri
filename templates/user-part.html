@@ -8,17 +8,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" type="image/png" sizes="16x16" href="../plugins/images/favicon.png">
-    <title>users</title>
+    <title>user</title>
     <!-- Bootstrap Core CSS -->
     <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Menu CSS -->
     <link href="../plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
     <!-- animation CSS -->
-    <link href="../css/animate.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <!-- color CSS -->
-    <link href="../css/colors/default.css" id="theme" rel="stylesheet">
+    <link href="css/colors/default.css" id="theme" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -28,8 +28,6 @@
 </head>
 
 <body class="fix-header">
-
-
     <!-- ============================================================== -->
     <!-- Preloader -->
     <!-- ============================================================== -->
@@ -48,7 +46,7 @@
         <nav class="navbar navbar-default navbar-static-top m-b-0">
             <div class="navbar-header">
                 <div class="top-left-part">
-                     <!-- Logo -->
+                    <!-- Logo -->
                     <a class="logo" href="index.html">
                         <!-- Logo icon image, you can use font-icon also --><b>
                         <!--This is dark logo icon--><img src="" /><!--This is light logo icon--><img src="" />
@@ -58,7 +56,7 @@
                      </span> </a>
                 </div>
                 <!-- /Logo -->
-                 <!-- <ul class="nav navbar-top-links navbar-right pull-right">
+                <!-- <ul class="nav navbar-top-links navbar-right pull-right">
                     <li>
                         <form role="search" class="app-search hidden-sm hidden-xs m-r-10">
                             <input type="text" placeholder="Search..." class="form-control"> <a href=""><i class="fa fa-search"></i></a> </form>
@@ -81,7 +79,7 @@
                 </div>
                 <ul class="nav" id="side-menu">
                     <li style="padding: 70px 0 0;">
-                        <a href="/" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
+                      <a href="/" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
                     </li>
                     <li>
                       <a href="device" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Devices</a>
@@ -89,24 +87,15 @@
                     <li>
                       <a href="user" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Users</a>
                     </li>
-                    <!-- <li>
-                        <a href="fontawesome.html" class="waves-effect"><i class="fa fa-font fa-fw" aria-hidden="true"></i>Icons</a>
-                    </li>
-                    <li>
-                        <a href="map-google.html" class="waves-effect"><i class="fa fa-globe fa-fw" aria-hidden="true"></i>Google Map</a>
-                    </li>
-                    <li>
-                        <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i>Blank Page</a>
-                    </li> -->
-                    <!-- <li>
-                        <a href="404.html" class="waves-effect"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>Error 404</a>
-                    </li> -->
 
                 </ul>
 
             </div>
 
         </div>
+
+
+
 
 
         <!-- ============================================================== -->
@@ -119,54 +108,29 @@
             <div class="container-fluid">
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Users</h4> </div>
+                        <h4 class="page-title">User Summary</h4> </div>
 
                 </div>
-                <!-- /row -->
+                <!-- /.row -->
+                <!-- .row -->
                 <div class="row">
-                    <div class="col-sm-12">
-                        <div class="white-box">
-                            <h3 class="box-title">Users Registered</h3>
-                            <!-- <p class="text-muted">Add class <code>.table</code></p> -->
-                            <div class="table-responsive">
-                                <table class="table" id="userTableAll">
-                                    <thead>
-                                        <tr>
-
-                                            <th>NAME</th>
-                                            <th>PHONE NO.</th>
-                                            <th>ADDRESS</th>
-                                            <th>TOTAL USAGE (click to view details)</b> </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" id="details" style="visibility:hidden">
                     <div class="col-md-4 col-xs-12">
                         <div class="white-box">
                             <div class="user-bg"> <img width="100%" alt="user" src="../plugins/images/large/img1.jpg">
                                 <div class="overlay-box">
                                     <div class="user-content">
                                         <a href="javascript:void(0)"><img src="../plugins/images/users/psh.png" class="thumb-lg img-circle" alt="img"></a>
-                                        <h4 class="text-white" id="userName"></h4>
-                                        <h5 class="text-white" id="userPhone"></h5> </div>
+                                        <h4 class="text-white">User Name</h4>
+                                        <h5 class="text-white">info@myadmin.com</h5> </div>
                                 </div>
                             </div>
                             <div class="user-btm-box">
-                              <h4 id="userUsageDetail"></h4> </div>
                                 <div class="col-md-4 col-sm-4 text-center">
-                                    <p class="text-purple">
-                                      <!-- <i class="ti-facebook"></i> -->
-                                    </p>
-                                <!-- <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-purple"><i class="ti-facebook"></i></p>
+                                    <h1>Currently Using # Devices</h1> </div>
+                                <div class="col-md-4 col-sm-4 text-center">
                                     <p class="text-blue"><i class="ti-twitter"></i></p>
-                                    <h1>125</h1> </div> -->
+                                    <h1>125</h1> </div>
                                 <!-- <div class="col-md-4 col-sm-4 text-center">
                                     <p class="text-danger"><i class="ti-dribbble"></i></p>
                                     <h1>556</h1> </div> -->
@@ -179,7 +143,7 @@
                                 <div class="form-group">
                                     <label class="col-md-12">Full Name</label>
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="John Smith" class="form-control form-control-line" id="editName"> </div>
+                                        <input type="text" placeholder="Johnathan Doe" class="form-control form-control-line"> </div>
                                 </div>
                                 <!-- <div class="form-group">
                                     <label for="example-email" class="col-md-12">Email</label>
@@ -194,13 +158,12 @@
                                 <div class="form-group">
                                     <label class="col-md-12">Phone No</label>
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="010 1234 5678" class="form-control form-control-line" id="editPhone"> </div>
+                                        <input type="text" placeholder="123 456 7890" class="form-control form-control-line"> </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-12">Summary</label>
                                     <div class="col-md-12">
-                                        <!-- <textarea rows="5" class="form-control form-control-line"></textarea> -->
-                                        <p id="userSummary"></p>
+                                        <textarea rows="5" class="form-control form-control-line"></textarea>
                                     </div>
                                 </div>
                                 <!-- <div class="form-group">
@@ -218,25 +181,22 @@
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <button class="btn btn-success">Update Profile</button>
-                                        <button id="hideDetails" onclick="hideDetails()" style="float:right">hide details</button>
                                     </div>
                                 </div>
-
                             </form>
-
                         </div>
                     </div>
                 </div>
                 <!-- /.row -->
             </div>
             <!-- /.container-fluid -->
-            <footer class="footer text-center"> 2018 &copy; All Rights Reserved by Team B-Share</footer>
+            <footer class="footer text-center"> 2018 &copy; All Rights Reserved by Team B-Share </footer>
         </div>
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
-    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="../plugins/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Menu Plugin JavaScript -->
@@ -247,95 +207,6 @@
     <script src="../js/waves.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="../js/custom.min.js"></script>
-
-
-    <script type="text/javascript">
-
-    var detailVisible= false;
-    function hideDetails(){
-      document.getElementById("details").style.visibility = "hidden";
-      detailVisible= false;
-    }
-
-    function showDetails(){
-      document.getElementById("details").style.visibility = "visible";
-      detailVisible= true;
-    }
-
-
-    function getUser(name, phone, usageMap){
-
-       if(!detailVisible){
-         showDetails();
-         document.getElementById("userName").innerHTML = name;
-         document.getElementById("userPhone").innerHTML = phone;
-         document.getElementById("userUsageDetail").innerHTML = "total usage: "+document.getElementById("userUsage").innerHTML;
-
-         $.each(usageMap, function(key, value) {
-           $("userSummary").append(key+": "+value);
-         });
-
-         // document.getElementById("userSummary").innerHTML= usage;
-         document.getElementById("editName").placeholder= name;
-         document.getElementById("editPhone").placeholder= phone;
-       } else {
-         hideDetails();
-         document.getElementById("userName").innerHTML = "";
-         document.getElementById("userPhone").innerHTML = "";
-         document.getElementById("userUsageDetail").innerHTML = "";
-         document.getElementById("userSummary").innerHTML = "";
-         document.getElementById("editName").placeholder= "John Smith";
-         document.getElementById("editPhone").placeholder= "010 1234 5678";
-       }
-
-    }
-    $(document).ready(function(){
-
-      updateUserData();
-      timer=setInterval(function(){
-
-        updateUserData();
-
-      }, 3000); //every 3 sec
-
-
-    });
-
-
-
-
-    function updateUserData(){
-      $.ajax(
-      {
-          type: "GET",
-          url: '/user/refresh/',
-          data: {},
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          cache: false,
-          success: function (data) {
-            renderUserTable(data);
-          }
-      });
-    };
-    function renderUserTable(data){
-      $("#userTableAll tbody tr").remove();
-      for(var i = 0; i < data.length; i++) {
-        drawUserRow(data[i]);
-      }
-    }
-    function drawUserRow(rowData){
-      if(!rowData.Status){
-        var row = $("<tr />")
-        $("#userTableAll").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-        row.append($("<td>" + rowData.name + "</td>"));
-        row.append($("<td>" + rowData.phone + "</td>"));
-        row.append($("<td>" + rowData.address + "</td>"));
-        row.append($("<td onclick='getUser("+ JSON.stringify(rowData.name)+","+JSON.stringify(rowData.phone)+","+JSON.stringify(rowData.usage) +")'>" + ".getTotalRate() </td>"));
-      }
-
-    }
-    </script>
 </body>
 
 </html>

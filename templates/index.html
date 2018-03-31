@@ -117,7 +117,7 @@
                       <li>
                         <div id="sparklinedash"></div>
                       </li>
-                      <li class="text-right"><i class="ti-arrow-up text-success"></i> <span class="counter text-success">2</span></li>
+                      <li class="text-right"><i class="ti-arrow-up text-success"></i> <span class="counter text-success" id="devicesActive"></span></li>
                     </ul>
                   </div>
                 </div>
@@ -128,7 +128,7 @@
                       <li>
                         <div id="sparklinedash2"></div>
                       </li>
-                      <li class="text-right"><i class="ti-arrow-up text-purple"></i> <span class="counter text-purple">10</span></li>
+                      <li class="text-right"><i class="ti-arrow-up text-purple"></i> <span class="counter text-purple" id="devicesRegistered"></span></li>
                     </ul>
                   </div>
                 </div>
@@ -139,7 +139,7 @@
                       <li>
                         <div id="sparklinedash3"></div>
                       </li>
-                      <li class="text-right"><i class="ti-arrow-up text-info"></i> <span class="counter text-info">25</span></li>
+                      <li class="text-right"><i class="ti-arrow-up text-info"></i> <span class="counter text-info" id="usersRegistered"></span></li>
                     </ul>
                   </div>
                 </div>
@@ -156,30 +156,19 @@
                             <h3 class="box-title">Devices Active</h3>
                             <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="deviceTable">
                                     <thead>
                                         <tr>
 
-                                            <th>ID(ENCRYPTED)</th>
-                                            <th>TYPE</th>
-                                            <th>STATUS</th>
-                                            <th>ADDRESS</th>
+                                          <th>ADDRESS</th>
+                                          <th>ID</th>
+                                          <th>TYPE</th>
+                                          <th>RATE</th>
+                                          <th>STATUS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{range .}}
-                                        {{if .Status}}
-                                        <tr>
 
-                                            <td>{{.Did}}</td>
-                                            <td >{{.Dtype}}</td>
-                                            <td>
-                                             <span style="color:green;float:right;">&#11044;</span>
-                                            </td>
-                                            <td><span class="text-success">{{.Address| printf "%x"}}</span></td>
-                                        </tr>
-                                        {{end}}
-                                        {{end}}
                                     </tbody>
                                 </table>
                             </div>
@@ -193,29 +182,19 @@
                             <h3 class="box-title">Users Active</h3>
                             <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="userTable">
                                     <thead>
                                         <tr>
 
-                                            <th>ID(ENCRYPTED)</th>
-                                            <th>TYPE</th>
-                                            <th>STATUS</th>
-                                            <th>ADDRESS</th>
+                                          <th>NAME</th>
+                                          <th>PHONE NO.</th>
+                                          <th>ADDRESS</th>
+                                          <th>TOTAL USAGE</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{range .}}
-                                        {{if .Status}}
-                                        <tr>
-
-                                            <td>{{.Did}}</td>
-                                            <td >{{.Dtype}}</td>
-                                            <td>{{.Status}}</td>
-                                            <td><span class="text-success">{{.Address}}</span></td>
-                                        </tr>
-                                        {{end}}
-                                        {{end}}
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -228,9 +207,9 @@
         </div>
         <!-- /#page-wrapper -->
     </div>
-    <!-- /#wrapper -->
     <!-- jQuery -->
-    <script src="../plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <!-- /#wrapper -->2
     <!-- Bootstrap Core JavaScript -->
     <script src="../bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Menu Plugin JavaScript -->
@@ -241,6 +220,108 @@
     <script src="../js/waves.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="../js/custom.min.js"></script>
+    <script type="text/javascript">
+    var devicesActive;
+    var devicesRegistered;
+    var usersRegistered;
+
+    $(document).ready(function(){
+      updateDeviceData();
+
+      updateUserData();
+
+      timer=setInterval(function(){
+        updateDeviceData();
+        updateUserData();
+
+
+      }, 3000); //every 3 sec
+
+
+    });
+
+    function updateDeviceData(){
+
+
+      $.ajax(
+      {
+          type: "GET",
+          url: '/device/refresh/',
+          data: {},
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          cache: false,
+          success: function (data) {
+            renderDeviceTable(data);
+          }
+      });
+    };
+
+    function renderDeviceTable(data){
+      devicesActive=0;
+      $("#deviceTable tbody tr").remove();
+      for(var i = 0; i < data.length; i++) {
+        drawDeviceRow(data[i]);
+      }
+      devicesRegistered=data.length;
+      $("#devicesRegistered").html(devicesRegistered);
+      $("#devicesActive").html(devicesActive);
+    }
+    function drawDeviceRow(rowData){
+
+      if(rowData.Status){
+        devicesActive++;
+        var row = $("<tr />")
+        $("#deviceTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+        row.append($("<td>" + rowData.Address + "</td>"));
+        row.append($("<td>" + rowData.Did + "</td>"));
+        row.append($("<td>" + rowData.Dtype + "</td>"));
+        row.append($("<td>" + rowData.rate + "</td>"));
+        row.append($("<td> <span style='color:green;'>&#11044;</span> </td>"));
+      }
+
+    }
+
+
+    function updateUserData(){
+
+
+      $.ajax(
+      {
+          type: "GET",
+          url: '/user/refresh/',
+          data: {},
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          cache: false,
+          success: function (data) {
+            renderUserTable(data);
+          }
+      });
+
+
+    };
+    function renderUserTable(data){
+      $("#userTable tbody tr").remove();
+      for(var i = 0; i < data.length; i++) {
+        drawUserRow(data[i]);
+
+      }
+      usersRegistered=data.length;
+      $("#usersRegistered").html(usersRegistered);
+    }
+    function drawUserRow(rowData){
+        var row = $("<tr />")
+        $("#userTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+        row.append($("<td>" + rowData.name + "</td>"));
+        row.append($("<td>" + rowData.phone + "</td>"));
+        row.append($("<td>" + rowData.address + "</td>"));
+        row.append($("<td>" + rowData.usage + ".getTotalRate() </td>"));
+
+
+    }
+
+    </script>
 </body>
 
 </html>

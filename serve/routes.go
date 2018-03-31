@@ -30,14 +30,14 @@ var routes = Routes{
 		"GetUser",
 		"GET",
 		"/user",
-		GetUser,
+		GetUsers,
 	},
-	Route{
-		"GetDevice",
-		"GET",
-		"/device/{did}",
-		GetDevice,
-	},
+	// Route{
+	// 	"GetDevice",
+	// 	"GET",
+	// 	"/device/{did}",
+	// 	GetDevice,
+	// },
 	// Route{
 	// 	"CreateDevice",
 	// 	"POST",
@@ -48,6 +48,18 @@ var routes = Routes{
 		"DeleteDevice",
 		"DELETE",
 		"/device/{did}",
-		GetDevice,
+		DeleteDevice,
+	},
+	Route{
+		"RefreshDevices",
+		"GET",
+		"/device/refresh",
+		RefreshDevices,
+	},
+	Route{
+		"RefreshUsers",
+		"GET",
+		"/user/refresh",
+		RefreshUsers,
 	},
 }

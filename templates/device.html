@@ -129,31 +129,18 @@
                             <h3 class="box-title">Devices Registered</h3>
                             <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="deviceTableAll">
                                     <thead>
                                         <tr>
 
+                                            <th>ADDRESS</th>
                                             <th>ID(ENCRYPTED)</th>
                                             <th>TYPE</th>
+                                            <th>RATE</th>
                                             <th>STATUS</th>
-                                            <th>ADDRESS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{range .}}
-
-                                        <tr>
-
-                                            <td>{{.Did}}</td>
-                                            <td >{{.Dtype}}</td>
-                                            <td>
-                                              {{if .Status}}<span style="color:green;float:right;">&#11044;</span>{{end}}
-                                              {{if not .Status}}<span style="color:red;float:right;">&#11044;</span>{{end}}
-                                            </td>
-                                            <td><span class="text-success">{{.Address| printf "%x"}}</span></td>
-                                        </tr>
-                                        {{end}}
-
                                     </tbody>
                                 </table>
                             </div>
@@ -169,7 +156,7 @@
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
-    <script  src="../plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Menu Plugin JavaScript -->
@@ -180,6 +167,56 @@
     <script src="../js/waves.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="../js/custom.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+      updateDeviceData();
+      timer=setInterval(function(){
+        updateDeviceData();
+
+      }, 3000); //every 3 sec
+
+
+    });
+
+    function updateDeviceData(){
+      $.ajax(
+      {
+          type: "GET",
+          url: '/device/refresh/',
+          data: {},
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          cache: false,
+          success: function (data) {
+            renderDeviceTable(data);
+          }
+      });
+    };
+
+    function renderDeviceTable(data){
+      $("#deviceTableAll tbody tr").remove();
+      for(var i = 0; i < data.length; i++) {
+        drawDeviceRow(data[i]);
+      }
+    }
+    function drawDeviceRow(rowData){
+      var row = $("<tr />")
+      $("#deviceTableAll").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+      row.append($("<td>" + rowData.Address + "</td>"));
+      row.append($("<td>" + rowData.Did + "</td>"));
+      row.append($("<td>" + rowData.Dtype + "</td>"));
+      row.append($("<td>" + rowData.rate + "</td>"));
+      if(rowData.Status){
+        row.append($("<td> <span style='color:green;'>&#11044;</span> </td>"));
+      }else{
+        row.append($("<td> <span style='color:red;'>&#11044;</span> </td>"));
+      }
+
+    }
+
+
+
+    </script>
 </body>
 
 </html>

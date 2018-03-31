@@ -14,7 +14,12 @@ import (
 func Index(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	tmpl.ExecuteTemplate(w, "index.html", conf.DeviceData.Data)
+	data := map[string]interface{}{
+		"Devices": conf.DeviceData.Data,
+		"Users":   conf.UserData.Data,
+	}
+
+	tmpl.ExecuteTemplate(w, "index.html", data)
 
 }
 
@@ -28,27 +33,27 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, "device.html", conf.DeviceData.Data)
 }
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetUsers(w http.ResponseWriter, r *http.Request) {
 	// json.NewEncoder(w).Encode(conf.DeviceData.Data)
 
-	fmt.Println("Get info of all devices")
+	fmt.Println("Get info of all users")
 
 	tmpl := template.Must(template.ParseFiles("templates/user.html"))
 
-	tmpl.ExecuteTemplate(w, "user.html", conf.DeviceData.Data)
+	tmpl.ExecuteTemplate(w, "user.html", conf.UserData.Data)
 }
 
-func GetDevice(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	for _, device := range conf.DeviceData.Data {
-		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
-			json.NewEncoder(w).Encode(device)
-			fmt.Println("Get info of ", device.Dtype, "with id ", device.Did)
-			return
-		}
-	}
-	json.NewEncoder(w).Encode(&conf.DeviceData.Data)
-}
+// func GetDevice(w http.ResponseWriter, r *http.Request) {
+// 	params := mux.Vars(r)
+// 	for _, device := range conf.DeviceData.Data {
+// 		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
+// 			json.NewEncoder(w).Encode(device)
+// 			fmt.Println("Get info of ", device.Dtype, "with id ", device.Did)
+// 			return
+// 		}
+// 	}
+// 	json.NewEncoder(w).Encode(&conf.DeviceData.Data)
+// }
 
 func DeleteDevice(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -60,4 +65,12 @@ func DeleteDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(conf.DeviceData.Data)
 	}
+}
+
+func RefreshDevices(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(&conf.DeviceData.Data)
+}
+
+func RefreshUsers(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(&conf.UserData.Data)
 }
