@@ -5,9 +5,10 @@ package conf
 import "errors"
 
 var (
-	ErrInvalidArguments = errors.New("Invalid arguments")
-	ErrDuplicateDevice  = errors.New("Duplicate device")
-	ErrDuplicateUser    = errors.New("Duplicate user")
-	ErrNoMathingDevice  = errors.New("No matching device")
-	ErrNoMathingUser    = errors.New("No matching user")
+	ErrInvalidArguments   = errors.New("Invalid arguments")
+	ErrDuplicateDevice    = errors.New("Duplicate device")
+	ErrDuplicateUser      = errors.New("Duplicate user")
+	ErrNoMatchingDevice   = errors.New("No matching device")
+	ErrNoMatchingUser     = errors.New("No matching user")
+	ErrUnexpectedBehavior = errors.New("Unexpected behavior")
 )
