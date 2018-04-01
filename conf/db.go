@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"strconv"
 )
 
 var (
@@ -34,6 +33,9 @@ func (d *Devices) Init() error {
 
 func (d *Devices) EncryptAndAdd(did string, dtype string, status bool) error {
 	h, err := EncryptDevice(dtype, did)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for _, device := range d.Data {
 		if bytes.Equal(device.Address, h) {
@@ -41,15 +43,10 @@ func (d *Devices) EncryptAndAdd(did string, dtype string, status bool) error {
 		}
 	}
 
-	didInt, err := strconv.ParseInt(did, 10, 64)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	d.Data = append(d.Data, Device{
 		Address: h,
 		Dtype:   dtype,
-		Did:     didInt,
+		Did:     did,
 		Status:  status,
 		Rate:    1,
 	})
@@ -65,6 +62,20 @@ func (d *Devices) Add(address []byte, new Device) error {
 
 	d.Data = append(d.Data, new)
 	return nil
+}
+
+func (d *Devices) Find(address []byte) (deviceShort, error) {
+	for _, device := range DeviceData.Data {
+		if bytes.Equal(device.Address, address) {
+			return deviceShort{
+				dtype: device.Dtype,
+				did:   device.Did,
+				rate:  device.Rate,
+			}, nil
+		}
+	}
+
+	return deviceShort{}, ErrNoMatchingDevice
 }
 
 func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {

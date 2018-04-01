@@ -40,14 +40,10 @@ var addCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		id, err := strconv.ParseInt(did, 10, 64)
-		if err != nil {
-			log.Fatal(err)
-		}
 		err = conf.DeviceData.Add(h, conf.Device{
 			Address: h,
 			Dtype:   dtype,
-			Did:     id,
+			Did:     did,
 			Status:  false,
 			Rate:    drate,
 		})

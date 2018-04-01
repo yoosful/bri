@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/pseohy/bri/conf"
@@ -58,7 +57,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func DeleteDevice(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	for index, device := range conf.DeviceData.Data {
-		if id, _ := strconv.ParseInt(params["did"], 10, 64); device.Did == id {
+		if id := params["did"]; device.Did == id {
 			conf.DeviceData.Data = append(conf.DeviceData.Data[:index], conf.DeviceData.Data[index+1:]...)
 			fmt.Println("Remove ", device.Dtype, "with id ", device.Did)
 			break

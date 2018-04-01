@@ -15,13 +15,13 @@ type Device struct {
 	Dtype string `json: "dtype"`
 
 	// Device id
-	Did int64 `json: "did"`
+	Did string `json: "did"`
 
 	// Divece status
 	Status bool `json: "status"`
 
 	// Device payment rate
-	Rate int `json:"rate"`
+	Rate float64 `json:"rate"`
 
 	// Last accessed user
 	User []byte `,json:"user"`
@@ -37,6 +37,12 @@ type Device struct {
 
 type Devices struct {
 	Data []Device
+}
+
+type deviceShort struct {
+	dtype string
+	did   string
+	rate  float64
 }
 
 // EncryptDevice encrypts a device using SHA256
