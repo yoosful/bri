@@ -154,17 +154,18 @@
                     <div class="col-sm-12">
                         <div class="white-box">
                             <h3 class="box-title">Devices Active</h3>
+                            <input type="text" id="deviceInput" onkeyup="filterDevices()" placeholder="Search for ID..">
                             <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
-                                <table class="table" id="deviceTable">
+                                <table class="table" id="deviceTable" >
                                     <thead>
                                         <tr>
 
-                                          <th>ADDRESS</th>
                                           <th>ID</th>
                                           <th>TYPE</th>
-                                          <th>RATE</th>
                                           <th>STATUS</th>
+                                          <th>RATE</th>
+                                          <th>ADDRESS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -180,6 +181,7 @@
                     <div class="col-sm-12">
                         <div class="white-box">
                             <h3 class="box-title">Users Active</h3>
+                            <input type="text" id="userInput" onkeyup="filterUsers()" placeholder="Search for names.." >
                             <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
                                 <table class="table" id="userTable">
@@ -188,8 +190,8 @@
 
                                           <th>NAME</th>
                                           <th>PHONE NO.</th>
-                                          <th>ADDRESS</th>
                                           <th>TOTAL USAGE</th>
+                                          <th>ADDRESS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -221,6 +223,46 @@
     <!-- Custom Theme JavaScript -->
     <script src="../js/custom.min.js"></script>
     <script type="text/javascript">
+    function filterDevices() {
+      // Declare variables
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("deviceInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("deviceTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+    function filterUsers() {
+      // Declare variables
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("userInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("userTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
     var devicesActive;
     var devicesRegistered;
     var usersRegistered;
@@ -255,6 +297,7 @@
             renderDeviceTable(data);
           }
       });
+      filterDevices();
     };
 
     function renderDeviceTable(data){
@@ -273,11 +316,11 @@
         devicesActive++;
         var row = $("<tr />")
         $("#deviceTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-        row.append($("<td>" + rowData.Address + "</td>"));
         row.append($("<td>" + rowData.Did + "</td>"));
         row.append($("<td>" + rowData.Dtype + "</td>"));
-        row.append($("<td>" + rowData.rate + "</td>"));
         row.append($("<td> <span style='color:green;'>&#11044;</span> </td>"));
+        row.append($("<td>" + rowData.rate + "</td>"));
+        row.append($("<td>" + rowData.Address + "</td>"));
       }
 
     }
@@ -298,7 +341,7 @@
             renderUserTable(data);
           }
       });
-
+      filterUsers();
 
     };
     function renderUserTable(data){
@@ -315,12 +358,11 @@
         $("#userTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
         row.append($("<td>" + rowData.name + "</td>"));
         row.append($("<td>" + rowData.phone + "</td>"));
-        row.append($("<td>" + rowData.address + "</td>"));
         row.append($("<td>" + rowData.usage + ".getTotalRate() </td>"));
+        row.append($("<td>" + rowData.address + "</td>"));
 
 
     }
-
     </script>
 </body>
 

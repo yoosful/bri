@@ -68,9 +68,11 @@ func DeleteDevice(w http.ResponseWriter, r *http.Request) {
 }
 
 func RefreshDevices(w http.ResponseWriter, r *http.Request) {
+	conf.DeviceData.Init()
 	json.NewEncoder(w).Encode(&conf.DeviceData.Data)
 }
 
 func RefreshUsers(w http.ResponseWriter, r *http.Request) {
+	conf.UserData.Init()
 	json.NewEncoder(w).Encode(&conf.UserData.Data)
 }
