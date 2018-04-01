@@ -51,7 +51,7 @@
                      <!-- Logo -->
                     <a class="logo" href="index.html">
                         <!-- Logo icon image, you can use font-icon also --><b>
-                        <!--This is dark logo icon--><img src="" /><!--This is light logo icon--><img src="" />
+                        <!--This is dark logo icon--><img src="../plugins/images/admin-logo-dark.png" /><!--This is light logo icon--><img src="" />
                      </b>
                         <!-- Logo text image you can use text also --><span class="hidden-xs">
                         <!--This is dark logo text--><img src="" /><!--This is light logo text--><img src="" />
@@ -81,10 +81,10 @@
                 </div>
                 <ul class="nav" id="side-menu">
                     <li style="padding: 70px 0 0;">
-                        <a href="/" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
+                        <a href="/" class="waves-effect"><i class="fa fa-desktop fa-fw" aria-hidden="true"></i>Dashboard</a>
                     </li>
                     <li>
-                      <a href="device" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Devices</a>
+                      <a href="device" class="waves-effect"><i class="fa fa-plug fa-fw" aria-hidden="true"></i>Devices</a>
                     </li>
                     <li>
                       <a href="user" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Users</a>
@@ -127,7 +127,7 @@
                     <div class="col-sm-12">
                         <div class="white-box">
                             <h3 class="box-title">Devices Registered</h3>
-                            <input type="text" id="deviceInput" onkeyup="filterDevices()" placeholder="Search for names.." >
+                            <input type="text" id="deviceInput" onkeyup="filterDevices()" placeholder="Search for id.." >
 
                             <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
@@ -135,11 +135,13 @@
                                     <thead>
                                         <tr>
 
-                                            <th>ADDRESS</th>
-                                            <th>ID(ENCRYPTED)</th>
                                             <th>TYPE</th>
-                                            <th>RATE</th>
+                                            <th></th>
+                                            <th>ID</th>
                                             <th>STATUS</th>
+                                            <th>RATE</th>
+                                            <th>PRIVATE KEY</th>
+                                            <th>TOTAL USAGE (click to view log)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -170,6 +172,27 @@
     <!-- Custom Theme JavaScript -->
     <script src="../js/custom.min.js"></script>
     <script type="text/javascript">
+    function filterDevices() {
+      // Declare variables
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("deviceInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("deviceTableAll");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+
     $(document).ready(function(){
       updateDeviceData();
       timer=setInterval(function(){
@@ -200,19 +223,23 @@
       for(var i = 0; i < data.length; i++) {
         drawDeviceRow(data[i]);
       }
+      filterDevices();
     }
     function drawDeviceRow(rowData){
       var row = $("<tr />")
       $("#deviceTableAll").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-      row.append($("<td>" + rowData.Address + "</td>"));
+      row.append($("<td>" + "<img src='../plugins/images/" + rowData.Dtype +  ".png' /></td>"));
+      row.append($("<td>("+ rowData.Dtype + ")</td>"));
+
       row.append($("<td>" + rowData.Did + "</td>"));
-      row.append($("<td>" + rowData.Dtype + "</td>"));
-      row.append($("<td>" + rowData.rate + "</td>"));
       if(rowData.Status){
-        row.append($("<td> <span style='color:green;'>&#11044;</span> </td>"));
+        row.append($("<td> <img src='../plugins/images/on.jpg' style='height:30%'/ > </td>"));
       }else{
-        row.append($("<td> <span style='color:red;'>&#11044;</span> </td>"));
+        row.append($("<td> <img src='../plugins/images/off.jpg' style='height:30%'/> </td>"));
       }
+      row.append($("<td>" + rowData.rate + "</td>"));
+      row.append($("<td>" + rowData.Address + "</td>"));
+      row.append($("<td>" + rowData.rate + " X hours </td>"));
 
     }
 

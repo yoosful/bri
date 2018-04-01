@@ -56,6 +56,7 @@ Store usage data with encryption.`,
 		http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js/"))))
 		http.Handle("/plugins/", http.StripPrefix("/plugins/", http.FileServer(http.Dir("plugins/"))))
 		http.Handle("/bootstrap/", http.StripPrefix("/bootstrap/", http.FileServer(http.Dir("bootstrap/"))))
+		http.Handle("/less/", http.StripPrefix("/less/", http.FileServer(http.Dir("less/"))))
 
 		router := serve.NewRouter()
 		router.HandleFunc("/device", UpdateDeviceStatus).Methods("POST")
