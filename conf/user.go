@@ -23,7 +23,7 @@ type User struct {
 	Usage map[string]float64 `json:"usage"`
 
 	// Accessible privileged devices
-	Priviledged []string `json:"accessible"`
+	Priviledged []string `json:"privileged"`
 }
 
 type Users struct {
