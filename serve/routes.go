@@ -62,4 +62,10 @@ var routes = Routes{
 		"/user/refresh",
 		RefreshUsers,
 	},
+	Route{
+		"NewUser",
+		"POST",
+		"/user/new",
+		NewUser,
+	},
 }

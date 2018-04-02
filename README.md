@@ -42,7 +42,7 @@ Available Commands:
   device      A device sends data to the server
   help        Help about any command
   serve       Run server that collects data from IOT devices
-  summary     Summarize usage of IOT devices
+  user        Manage user registration and summary
 
 Flags:
       --config string   config file (default is $HOME/.bri.yaml)
@@ -57,16 +57,9 @@ Use "bri [command] --help" for more information about a command.
 ### Add and delete devices
 Addition and deletion of a device is easy. You can add devices with `config` command.
 ```
-$ ./bri config add <--type|-t> <dtype> <--id|-i> <did>
+$ ./bri config add <--type|-t> <dtype> <--id|-i> <did> <-p> <privilege>
 $ ./bri config delete <--type|-t> <dtype> <--id|-i> <did>
 ```
-
-### Add and delete user
-Addition and deletion of a user also can be done easily.
-```
-$ ./bri config user [-d] <-i Name> <-i Phone>
-```
-* `-d`: If this flag is set, this command will delete corresponding user.
 
 ### Run server
 You can run the server by running simple command:
@@ -79,3 +72,18 @@ You can simulate message generated from user or device:
 ```
 $ ./bri device <--type|-t> <dtype> <--id|-i> <did> <--user|-u Name> <--user|-u Phone> <--msg|-m> <on|off>
 ```
+
+### Add new user
+`user` command is used to manage user. You can add a new user by:
+```
+$ ./bri user new <--name|-n> <name> <--phone|-p> <phone>
+```
+
+
+### Add and delete user (deprecated / buggy)
+Addition and deletion of a user also can be done easily.
+```
+$ ./bri config user [-d] <-i Name> <-i Phone>
+```
+* `-d`: If this flag is set, this command will delete corresponding user.
+

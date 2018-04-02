@@ -21,39 +21,56 @@
 package cmd
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
 
+	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// userCmd represents the user command
-var userCmd = &cobra.Command{
-	Use:   "user",
-	Short: "Manage user registration and summary",
-	Long:  `Manage user registration, previlege and usage information`,
+// newCmd represents the new command
+var newCmd = &cobra.Command{
+	Use:   "new",
+	Short: "Add new user",
+	Long:  `Add new user and grant default privilege`,
+
+	// Run new will send HTTP request to the server to add a user
+	// to database
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("user called")
+		msg := conf.UserMsg{
+			Name:  uname,
+			Phone: uphone,
+		}
+
+		jsonUMsg, err := json.Marshal(&msg)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		req, err := http.NewRequest("POST", userURL, bytes.NewBuffer(jsonUMsg))
+		req.Header.Set("Content-type", "application/json")
+
+		client := http.Client{}
+
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+		defer resp.Body.Close()
 	},
 }
 
-var (
-	uname     string
-	uphone    string
-	requested string
-
-	userURL string
-)
-
 func init() {
-	rootCmd.AddCommand(userCmd)
+	userCmd.AddCommand(newCmd)
 
-	// Here you will define your flags and configuration settings.
+	newCmd.Flags().StringVarP(&uname, "name", "n", "", "User name to add")
+	newCmd.Flags().StringVarP(&uphone, "phone", "p", "", "User phone number to add")
+	newCmd.Flags().StringVarP(&userURL, "url", "u", "http://localhost:4000/user/new", "server URL")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// userCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// userCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlag("name", newCmd.Flags().Lookup("name"))
+	viper.BindPFlag("phone", newCmd.Flags().Lookup("phone"))
+	viper.BindPFlag("url", newCmd.Flags().Lookup("url"))
 }

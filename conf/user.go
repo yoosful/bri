@@ -30,6 +30,12 @@ type Users struct {
 	Data []User
 }
 
+type UserMsg struct {
+	Name      string `json:"name"`
+	Phone     string `json:"phone"`
+	Requested string `json:"requested"`
+}
+
 // UserStatusEntry represents information of a device used by a user
 type UserStatusEntry struct {
 	Dtype string  `json:"dtype"`

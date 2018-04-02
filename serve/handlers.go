@@ -75,3 +75,28 @@ func RefreshUsers(w http.ResponseWriter, r *http.Request) {
 	conf.UserData.Init()
 	json.NewEncoder(w).Encode(&conf.UserData.Data)
 }
+
+// NewUser handles NewUser Request from /user/new
+func NewUser(res http.ResponseWriter, req *http.Request) {
+	decoder := json.NewDecoder(req.Body)
+
+	var umsg conf.UserMsg
+	err := decoder.Decode(&umsg)
+	if err != nil {
+		panic(err)
+		return
+	}
+	defer req.Body.Close()
+
+	err = conf.UserData.EncryptAndAdd(umsg.Name, umsg.Phone)
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	err = conf.UserData.Dump()
+	if err != nil {
+		panic(err)
+		return
+	}
+}
