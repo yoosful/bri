@@ -26,10 +26,10 @@ type Device struct {
 	// Last accessed user
 	User []byte `,json:"user"`
 
-	// Required privillege of the device
+	// Required privilege of the device
 	// 0 - every user can access
 	// 1 - only allowed users can access
-	Privillege int
+	Privilege int
 
 	// Addresses of permitted users
 	Perm []string `,json:"perm"`
