@@ -26,22 +26,18 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
-
-type DeviceMsg struct {
-	Dtype string   `json:"dtype"`
-	Did   string   `json:"did"`
-	UInfo []string `json:"uid"`
-	Msg   string   `json:"msg"`
-}
 
 var (
 	device_dtype string
 	device_did   string
 	device_uInfo []string
 	devide_msg   string
+
+	deviceURL string
 )
 
 // deviceCmd represents the device command
@@ -54,7 +50,7 @@ Only data from the authenticated devices are collected`,
 	Run: func(cmd *cobra.Command, args []string) {
 		url := "http://localhost:4000/device"
 
-		var dmsg = DeviceMsg{
+		var dmsg = conf.DeviceMsg{
 			Dtype: device_dtype,
 			Did:   device_did,
 			UInfo: device_uInfo,
@@ -86,9 +82,11 @@ func init() {
 	deviceCmd.Flags().StringSliceVarP(&device_uInfo, "user", "u",
 		[]string{"", ""}, "User name and phone number")
 	deviceCmd.Flags().StringVarP(&devide_msg, "msg", "m", "on", "Message")
+	deviceCmd.Flags().StringVar(&deviceURL, "url", "http://localhost/device", "URL to the server")
 
 	viper.BindPFlag("type", deviceCmd.Flags().Lookup("type"))
 	viper.BindPFlag("id", deviceCmd.Flags().Lookup("id"))
 	viper.BindPFlag("user", deviceCmd.Flags().Lookup("user"))
 	viper.BindPFlag("msg", deviceCmd.Flags().Lookup("msg"))
+	viper.BindPFlag("url", deviceCmd.Flags().Lookup("url"))
 }

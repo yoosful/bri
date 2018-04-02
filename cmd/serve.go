@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -58,38 +57,10 @@ Store usage data with encryption.`,
 		http.Handle("/less/", http.StripPrefix("/less/", http.FileServer(http.Dir("less/"))))
 
 		router := serve.NewRouter()
-		router.HandleFunc("/device", UpdateDeviceStatus).Methods("POST")
 		http.Handle("/", router)
 
 		log.Fatal(http.ListenAndServe(":4000", nil))
 	},
-}
-
-func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	log.Println("A new message arrived")
-
-	var dmsg DeviceMsg
-	err := decoder.Decode(&dmsg)
-	if err != nil {
-		panic(err)
-	}
-	defer r.Body.Close()
-
-	hDevice, err := conf.EncryptDevice(dmsg.Dtype, dmsg.Did)
-	if err != nil {
-		panic(err)
-	}
-
-	hUuser, err := conf.EncryptUser(dmsg.UInfo[0], dmsg.UInfo[1])
-	if err != nil {
-		panic(err)
-	}
-
-	conf.DeviceData.UpdateStatus(hDevice, hUuser, dmsg.Msg)
-
-	conf.DeviceData.Dump()
-	conf.UserData.Dump()
 }
 
 func DeviceDetail(d conf.Device) template.HTML {

@@ -45,6 +45,13 @@ type deviceShort struct {
 	rate  float64
 }
 
+type DeviceMsg struct {
+	Dtype string   `json:"dtype"`
+	Did   string   `json:"did"`
+	UInfo []string `json:"uid"`
+	Msg   string   `json:"msg"`
+}
+
 // EncryptDevice encrypts a device using SHA256
 func EncryptDevice(dtype, did string) ([]byte, error) {
 	h := sha256.New()

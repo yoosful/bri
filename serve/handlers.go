@@ -100,3 +100,28 @@ func NewUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
+func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+
+	var dmsg conf.DeviceMsg
+	err := decoder.Decode(&dmsg)
+	if err != nil {
+		panic(err)
+	}
+	defer r.Body.Close()
+
+	hDevice, err := conf.EncryptDevice(dmsg.Dtype, dmsg.Did)
+	if err != nil {
+		panic(err)
+	}
+
+	hUuser, err := conf.EncryptUser(dmsg.UInfo[0], dmsg.UInfo[1])
+	if err != nil {
+		panic(err)
+	}
+
+	conf.DeviceData.UpdateStatus(hDevice, hUuser, dmsg.Msg)
+
+	conf.DeviceData.Dump()
+	conf.UserData.Dump()
+}

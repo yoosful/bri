@@ -68,4 +68,10 @@ var routes = Routes{
 		"/user/new",
 		NewUser,
 	},
+	Route{
+		"UpdateDeviceStatus",
+		"POST",
+		"/device",
+		UpdateDeviceStatus,
+	},
 }
