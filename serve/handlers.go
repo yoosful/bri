@@ -1,6 +1,8 @@
 package serve
 
 import (
+	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -100,6 +102,7 @@ func NewUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
+
 func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 
@@ -122,6 +125,61 @@ func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
 
 	conf.DeviceData.UpdateStatus(hDevice, hUuser, dmsg.Msg)
 
+	conf.DeviceData.Dump()
+	conf.UserData.Dump()
+}
+
+// UpdateUserPermission will update user's accessible privileged devices
+func UpdateUserPermission(res http.ResponseWriter, req *http.Request) {
+	decoder := json.NewDecoder(req.Body)
+
+	var umsg conf.UserMsg
+	err := decoder.Decode(&umsg)
+	if err != nil {
+		panic(err)
+		return
+	}
+	defer req.Body.Close()
+
+	u, err := conf.EncryptUser(umsg.Name, umsg.Phone)
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	// Add privileged device to user's previlege list
+	i := 0
+	for _, user := range conf.UserData.Data {
+		if bytes.Equal(u, user.Address) {
+			user.Priviledged = append(user.Priviledged, umsg.Requested)
+		}
+	}
+
+	// No matching user
+	if i >= len(conf.UserData.Data) {
+		return
+	}
+
+	h, err := hex.DecodeString(umsg.Requested)
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	// Add user to device's privileged user list
+	for _, device := range conf.DeviceData.Data {
+		if bytes.Equal(device.Address, h) {
+			if device.Privilege == 0 {
+				return
+			}
+
+			uString := hex.EncodeToString(u)
+			device.Perm = append(device.Perm, uString)
+			break
+		}
+	}
+
+	// Dump to database
 	conf.DeviceData.Dump()
 	conf.UserData.Dump()
 }
