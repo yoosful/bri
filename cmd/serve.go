@@ -25,7 +25,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/pseohy/bri/conf"
 	"github.com/pseohy/bri/serve"
@@ -95,7 +94,7 @@ func UpdateDeviceStatus(w http.ResponseWriter, r *http.Request) {
 
 func DeviceDetail(d conf.Device) template.HTML {
 	if debug {
-		return template.HTML(d.Dtype + " " + strconv.FormatInt(d.Did, 10))
+		return template.HTML(d.Dtype + " " + d.Did)
 	} else {
 		return template.HTML("")
 	}

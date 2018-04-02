@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
@@ -40,12 +39,21 @@ var addCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		var privilege int
+		if dprivileged {
+			privilege = 1
+		} else {
+			privilege = 0
+		}
+
 		err = conf.DeviceData.Add(h, conf.Device{
-			Address: h,
-			Dtype:   dtype,
-			Did:     did,
-			Status:  false,
-			Rate:    drate,
+			Address:   h,
+			Dtype:     dtype,
+			Did:       did,
+			Status:    false,
+			Rate:      drate,
+			Privilege: privilege,
+			Perm:      make([]string, 0, 0),
 		})
 
 		if err != nil {
@@ -61,9 +69,11 @@ func init() {
 
 	addCmd.Flags().StringVarP(&dtype, "type", "t", "", "Device type")
 	addCmd.Flags().StringVarP(&did, "id", "i", "", "Device serial no.")
-	addCmd.Flags().IntVarP(&drate, "rate", "r", 1, "Device payment rate")
+	addCmd.Flags().Float64VarP(&drate, "rate", "r", float64(1.0), "Device payment rate")
+	addCmd.Flags().BoolVarP(&dprivileged, "privileged", "p", false, "Device privilege")
 
 	viper.BindPFlag("type", addCmd.Flags().Lookup("type"))
 	viper.BindPFlag("id", addCmd.Flags().Lookup("id"))
 	viper.BindPFlag("rate", addCmd.Flags().Lookup("rate"))
+	viper.BindPFlag("privileged", addCmd.Flags().Lookup("privileged"))
 }

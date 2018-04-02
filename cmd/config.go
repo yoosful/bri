@@ -38,9 +38,10 @@ are encrypted.`,
 }
 
 var (
-	dtype string
-	did   string
-	drate int
+	dtype       string
+	did         string
+	drate       float64
+	dprivileged bool
 
 	uInfo   []string
 	uDelete bool

@@ -21,54 +21,31 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 
-	"github.com/pseohy/bri/conf"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // userCmd represents the user command
 var userCmd = &cobra.Command{
 	Use:   "user",
-	Short: "Manage users",
-	Long:  `Add or delete users in an encrypted way.`,
+	Short: "Manage user registration and summary",
+	Long:  `Manage user registration, previlege and usage information`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var err error
-		if uDelete {
-			/* delete a user from the database */
-			h, err := conf.EncryptUser(uInfo[0], uInfo[1])
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			err = conf.UserData.Delete(h)
-			if err != nil {
-				log.Fatal(err)
-			}
-		} else {
-			/* add a user to the database */
-			err = conf.UserData.EncryptAndAdd(uInfo[0], uInfo[1])
-			if err != nil {
-				log.Fatal(err)
-			}
-
-		}
-		err = conf.UserData.Dump()
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Println("user called")
 	},
 }
 
 func init() {
-	configCmd.AddCommand(userCmd)
+	rootCmd.AddCommand(userCmd)
 
-	userCmd.Flags().StringSliceVarP(&uInfo, "info", "i",
-		[]string{"", ""}, "User name and phone number")
-	userCmd.Flags().BoolVarP(&uDelete, "delete", "d",
-		false, "Delete if specified")
+	// Here you will define your flags and configuration settings.
 
-	viper.BindPFlag("user", userCmd.Flags().Lookup("user"))
-	viper.BindPFlag("delete", userCmd.Flags().Lookup("delete"))
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// userCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// userCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
