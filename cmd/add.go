@@ -53,7 +53,7 @@ var addCmd = &cobra.Command{
 			Status:    false,
 			Rate:      drate,
 			Privilege: privilege,
-			Perm:      make([]string, 0, 0),
+			Perm:      map[string]string{},
 		})
 
 		if err != nil {

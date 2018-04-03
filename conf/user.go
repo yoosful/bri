@@ -3,7 +3,6 @@
 package conf
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 )
@@ -11,7 +10,7 @@ import (
 // User represents a registered user
 type User struct {
 	// Encrypted user address
-	Address []byte `json:"address"`
+	Address string `json:"address"`
 
 	// User full name
 	Name string `json:"name"`
@@ -23,7 +22,7 @@ type User struct {
 	Usage map[string]float64 `json:"usage"`
 
 	// Accessible privileged devices
-	Priviledged []string `json:"privileged"`
+	Priviledged map[string]string `json:"privileged"`
 }
 
 type Users struct {
@@ -31,9 +30,11 @@ type Users struct {
 }
 
 type UserMsg struct {
-	Name      string `json:"name"`
-	Phone     string `json:"phone"`
-	Requested string `json:"requested"`
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
+	Type  string `json:"type"`
+	Id    string `json:"id"`
+	Key   string `json:"key"`
 }
 
 // UserStatusEntry represents information of a device used by a user
@@ -51,45 +52,46 @@ type UserStatus struct {
 }
 
 // EncryptUser encrypts user info into hash using SHA256
-func EncryptUser(name string, phone string) ([]byte, error) {
+func EncryptUser(name string, phone string) (string, error) {
 	h := sha256.New()
 	src := make([]byte, 0, 256)
 
 	if name == "" || phone == "" {
-		return nil, ErrInvalidArguments
+		return "", ErrInvalidArguments
 	}
 
 	src = append(src, name...)
 	src = append(src, phone...)
 
 	if _, err := h.Write(src); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return h.Sum(nil), nil
+	address := hex.EncodeToString(h.Sum(nil))
+
+	return address, nil
 }
 
 // GetTotalPrice will return the status of user
-func (u User) GetStatus(address []byte) (UserStatus, error) {
-	var user *User = nil
+func (u User) GetStatus(address string) (UserStatus, error) {
+	var target *User = nil
 
-	for _, u := range UserData.Data {
-		if bytes.Equal(user.Address, address) {
-			user = &u
+	for _, user := range UserData.Data {
+		if address == user.Address {
+			target = &user
 		}
 	}
 
 	// no matching user
-	if user == nil {
+	if target == nil {
 		return UserStatus{}, ErrNoMatchingUser
 	}
 
 	var statlist []UserStatusEntry
 	var price float64 = 0.0
 
-	for dAddress, used := range user.Usage {
-		h, err := hex.DecodeString(dAddress)
-		device, err := DeviceData.Find(h)
+	for dAddress, used := range target.Usage {
+		device, err := DeviceData.Find(dAddress)
 
 		if err != nil {
 			return UserStatus{}, err

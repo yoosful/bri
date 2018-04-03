@@ -37,11 +37,10 @@ var userCmd = &cobra.Command{
 }
 
 var (
-	uname     string
-	uphone    string
-	requested string
-
-	userURL string
+	uname       string
+	uphone      string
+	requestType string
+	requestId   string
 )
 
 func init() {

@@ -31,14 +31,14 @@ import (
 	"github.com/spf13/viper"
 )
 
+var userRequestURL string
+
 // requestCmd represents the request command
 var requestCmd = &cobra.Command{
 	Use:   "request",
 	Short: "Request permission to use a device",
 	Long:  `Request permission to use a privileged device.`,
 
-	// Run request will send HTTP request to server to request permission
-	// to use a privileged device
 	Run: func(cmd *cobra.Command, args []string) {
 		// We are assuming that the request contains of device id, to
 		// simplify testing condition.
@@ -46,9 +46,10 @@ var requestCmd = &cobra.Command{
 		// We will assume here the user knows the address of user after
 		// he made a transaction...
 		msg := conf.UserMsg{
-			Name:      uname,
-			Phone:     uphone,
-			Requested: requested,
+			Name:  uname,
+			Phone: uphone,
+			Type:  requestType,
+			Id:    requestId,
 		}
 
 		jsonUMsg, err := json.Marshal(&msg)
@@ -56,7 +57,7 @@ var requestCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		req, err := http.NewRequest("POST", userURL, bytes.NewBuffer(jsonUMsg))
+		req, err := http.NewRequest("POST", userRequestURL, bytes.NewBuffer(jsonUMsg))
 		req.Header.Set("Content-type", "application/json")
 
 		client := http.Client{}
@@ -74,9 +75,10 @@ func init() {
 
 	requestCmd.Flags().StringVarP(&uname, "name", "n", "", "Name of requesting user")
 	requestCmd.Flags().StringVarP(&uphone, "phone", "p", "", "Phone number of requeting user")
-	requestCmd.Flags().StringVarP(&userURL, "url", "u",
+	requestCmd.Flags().StringVarP(&userRequestURL, "url", "u",
 		"http://localhost:4000/user/request", "Requested device id")
-	requestCmd.Flags().StringVarP(&requested, "request", "d", "", "Address of requested device")
+	requestCmd.Flags().StringVarP(&requestType, "type", "t", "", "Type of requested device")
+	requestCmd.Flags().StringVarP(&requestId, "id", "i", "", "Id of requested device")
 
 	viper.BindPFlag("name", requestCmd.Flags().Lookup("name"))
 	viper.BindPFlag("phone", requestCmd.Flags().Lookup("phone"))

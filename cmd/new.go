@@ -31,6 +31,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var userNewURL string
+
 // newCmd represents the new command
 var newCmd = &cobra.Command{
 	Use:   "new",
@@ -50,7 +52,7 @@ var newCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		req, err := http.NewRequest("POST", userURL, bytes.NewBuffer(jsonUMsg))
+		req, err := http.NewRequest("POST", userNewURL, bytes.NewBuffer(jsonUMsg))
 		req.Header.Set("Content-type", "application/json")
 
 		client := http.Client{}
@@ -68,7 +70,7 @@ func init() {
 
 	newCmd.Flags().StringVarP(&uname, "name", "n", "", "User name to add")
 	newCmd.Flags().StringVarP(&uphone, "phone", "p", "", "User phone number to add")
-	newCmd.Flags().StringVarP(&userURL, "url", "u", "http://localhost:4000/user/new", "server URL")
+	newCmd.Flags().StringVarP(&userNewURL, "url", "u", "http://localhost:4000/user/new", "server URL")
 
 	viper.BindPFlag("name", newCmd.Flags().Lookup("name"))
 	viper.BindPFlag("phone", newCmd.Flags().Lookup("phone"))

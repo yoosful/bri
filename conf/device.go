@@ -4,12 +4,13 @@ package conf
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 )
 
 // Device represents a registered device
 type Device struct {
 	// Encrypted address
-	Address []byte `json: "address"`
+	Address string `json: "address"`
 
 	// Device type
 	Dtype string `json: "dtype"`
@@ -24,7 +25,7 @@ type Device struct {
 	Rate float64 `json:"rate"`
 
 	// Last accessed user
-	User []byte `,json:"user"`
+	User string `,json:"user"`
 
 	// Required privilege of the device
 	// 0 - every user can access
@@ -32,7 +33,7 @@ type Device struct {
 	Privilege int
 
 	// Addresses of permitted users
-	Perm []string `,json:"perm"`
+	Perm map[string]string `,json:"perm"`
 }
 
 type Devices struct {
@@ -53,20 +54,22 @@ type DeviceMsg struct {
 }
 
 // EncryptDevice encrypts a device using SHA256
-func EncryptDevice(dtype, did string) ([]byte, error) {
+func EncryptDevice(dtype, did string) (string, error) {
 	h := sha256.New()
 	src := make([]byte, 0, 256)
 
 	if dtype == "" || did == "" {
-		return nil, ErrInvalidArguments
+		return "", ErrInvalidArguments
 	}
 
 	src = append(src, dtype...)
 	src = append(src, did...)
 
 	if _, err := h.Write(src); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return h.Sum(nil), nil
+	address := hex.EncodeToString(h.Sum(nil))
+
+	return address, nil
 }

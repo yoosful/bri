@@ -3,8 +3,6 @@
 package conf
 
 import (
-	"bytes"
-	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -38,24 +36,25 @@ func (d *Devices) EncryptAndAdd(did string, dtype string, status bool) error {
 	}
 
 	for _, device := range d.Data {
-		if bytes.Equal(device.Address, h) {
+		if h == device.Address {
 			return ErrDuplicateDevice
 		}
 	}
 
 	d.Data = append(d.Data, Device{
-		Address: h,
-		Dtype:   dtype,
-		Did:     did,
-		Status:  status,
-		Rate:    1,
+		Address:   h,
+		Dtype:     dtype,
+		Did:       did,
+		Status:    status,
+		Privilege: 0,
+		Rate:      float64(1.0),
 	})
 	return nil
 }
 
-func (d *Devices) Add(address []byte, new Device) error {
+func (d *Devices) Add(address string, new Device) error {
 	for _, device := range d.Data {
-		if bytes.Equal(device.Address, address) {
+		if address == device.Address {
 			return ErrDuplicateDevice
 		}
 	}
@@ -64,9 +63,9 @@ func (d *Devices) Add(address []byte, new Device) error {
 	return nil
 }
 
-func (d *Devices) Find(address []byte) (deviceShort, error) {
+func (d *Devices) Find(address string) (deviceShort, error) {
 	for _, device := range DeviceData.Data {
-		if bytes.Equal(device.Address, address) {
+		if address == device.Address {
 			return deviceShort{
 				dtype: device.Dtype,
 				did:   device.Did,
@@ -78,10 +77,10 @@ func (d *Devices) Find(address []byte) (deviceShort, error) {
 	return deviceShort{}, ErrNoMatchingDevice
 }
 
-func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
+func (d *Devices) UpdateStatus(address string, user string, msg string) error {
 	i := 0
 	for _, device := range d.Data {
-		if bytes.Equal(device.Address, address) {
+		if address == device.Address {
 			isTurnedOn := d.Data[i].Status
 
 			if isTurnedOn {
@@ -93,7 +92,7 @@ func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
 					log.Println("Unexpected Message Arrived")
 					break
 				}
-				if !bytes.Equal(d.Data[i].User, user) {
+				if device.User != user {
 					log.Println("Turned Off by a Different User?!")
 					break
 				} else {
@@ -138,10 +137,10 @@ func (d *Devices) UpdateStatus(address []byte, user []byte, msg string) error {
 	return nil
 }
 
-func (d *Devices) Delete(address []byte) error {
+func (d *Devices) Delete(address string) error {
 	i := 0
 	for _, device := range d.Data {
-		if bytes.Equal(device.Address, address) {
+		if address == device.Address {
 			break
 		}
 		i++
@@ -189,25 +188,26 @@ func (u *Users) EncryptAndAdd(name, phone string) error {
 	}
 
 	for _, user := range u.Data {
-		if bytes.Equal(user.Address, h) {
+		if h == user.Address {
 			return ErrDuplicateUser
 		}
 	}
 
 	u.Data = append(u.Data, User{
-		Address: h,
-		Name:    name,
-		Phone:   phone,
-		Usage:   map[string]float64{},
+		Address:     h,
+		Name:        name,
+		Phone:       phone,
+		Usage:       map[string]float64{},
+		Priviledged: map[string]string{},
 	})
 
 	return nil
 }
 
-func (u *Users) Delete(address []byte) error {
+func (u *Users) Delete(address string) error {
 	i := 0
 	for _, user := range u.Data {
-		if bytes.Equal(user.Address, address) {
+		if address == user.Address {
 			break
 		}
 		i++
@@ -224,10 +224,10 @@ func (u *Users) Delete(address []byte) error {
 
 // UpdateUsage updage usage info of a user with device id and
 // the amount of time turned on.
-func (u *Users) UpdateUsage(address []byte, device []byte, amount float64) error {
+func (u *Users) UpdateUsage(address string, device string, amount float64) error {
 	i := 0
 	for _, user := range u.Data {
-		if bytes.Equal(user.Address, address) {
+		if address == user.Address {
 			break
 		}
 		i++
@@ -239,7 +239,7 @@ func (u *Users) UpdateUsage(address []byte, device []byte, amount float64) error
 
 	j := 0
 	for k, _ := range u.Data[i].Usage {
-		if k == hex.EncodeToString(device) {
+		if k == device {
 			u.Data[i].Usage[k] += amount
 			break
 		}
@@ -247,7 +247,7 @@ func (u *Users) UpdateUsage(address []byte, device []byte, amount float64) error
 	}
 
 	if j >= len(u.Data[i].Usage) {
-		u.Data[i].Usage[hex.EncodeToString(device)] = amount
+		u.Data[i].Usage[device] = amount
 	}
 
 	return nil

@@ -3,7 +3,6 @@
 package conf
 
 import (
-	"bytes"
 	"time"
 )
 
@@ -12,14 +11,14 @@ var Actives []Active
 
 // Record contains records of active devices
 type Active struct {
-	Address []byte
+	Address string
 	On      time.Time
 }
 
-func GetDuration(actives []Active, address []byte) (time.Duration, error) {
+func GetDuration(actives []Active, address string) (time.Duration, error) {
 	i := 0
 	for _, active := range actives {
-		if bytes.Equal(address, active.Address) {
+		if address == active.Address {
 			break
 		}
 		i++
@@ -36,9 +35,9 @@ func GetDuration(actives []Active, address []byte) (time.Duration, error) {
 	return time.Duration(0), nil
 }
 
-func SetOnTime(actives []Active, address []byte) error {
+func SetOnTime(actives []Active, address string) error {
 	for _, active := range actives {
-		if bytes.Equal(address, active.Address) {
+		if address == active.Address {
 			return ErrUnexpectedBehavior
 		}
 	}
