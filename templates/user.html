@@ -51,7 +51,7 @@
                      <!-- Logo -->
                     <a class="logo" href="index.html">
                         <!-- Logo icon image, you can use font-icon also --><b>
-                        <!--This is dark logo icon--><img src="../plugins/images/admin-logo-dark.png" /><!--This is light logo icon--><img src="" />
+                        <!--This is dark logo icon--><img src="../plugins/images/admin-logo-dark.png" style="height:100%"/><!--This is light logo icon--><img src="" />
                      </b>
                         <!-- Logo text image you can use text also --><span class="hidden-xs">
                         <!--This is dark logo text--><img src="" /><!--This is light logo text--><img src="" />
@@ -137,8 +137,8 @@
 
                                             <th>NAME</th>
                                             <th>PHONE NO.</th>
-                                            <th>PRIVATE KEY</th>
                                             <th>TOTAL USAGE (click to view details)</b> </th>
+                                            <th>PRIVATE KEY</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -322,6 +322,8 @@
 
 
     function updateUserData(){
+
+
       $.ajax(
       {
           type: "GET",
@@ -334,23 +336,27 @@
             renderUserTable(data);
           }
       });
+
     };
     function renderUserTable(data){
       $("#userTableAll tbody tr").remove();
       for(var i = 0; i < data.length; i++) {
         drawUserRow(data[i]);
+
       }
       filterUsers();
+
+      usersRegistered=data.length;
+      $("#usersRegistered").html("<a href='device'>"+usersRegistered+"</a>");
     }
     function drawUserRow(rowData){
-      if(!rowData.Status){
         var row = $("<tr />")
         $("#userTableAll").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
         row.append($("<td>" + rowData.name + "</td>"));
         row.append($("<td>" + rowData.phone + "</td>"));
+        row.append($("<td>" + JSON.stringify(rowData.privileged) + "</td>"));
         row.append($("<td>" + rowData.address + "</td>"));
-        row.append($("<td onclick='getUser("+ JSON.stringify(rowData.name)+","+JSON.stringify(rowData.phone)+","+JSON.stringify(rowData.usage) +")'>" + ".getTotalRate() </td>"));
-      }
+
 
     }
     </script>

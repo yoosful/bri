@@ -52,7 +52,7 @@
                      <!-- Logo -->
                     <a class="logo" href="index.html">
                         <!-- Logo icon image, you can use font-icon also --><b>
-                        <!--This is dark logo icon--><img src="../plugins/images/admin-logo-dark.png" /><!--This is light logo icon--><img src="" />
+                        <!--This is dark logo icon--><img src="../plugins/images/admin-logo-dark.png" style="height:100%"/><!--This is light logo icon--><img src="" />
                      </b>
                         <!-- Logo text image you can use text also --><span class="hidden-xs">
                         <!--This is dark logo text--><img src="" /><!--This is light logo text--><img src="" />
@@ -158,9 +158,8 @@
                                           <th>TYPE</th>
                                           <th>ID</th>
                                           <th>STATUS</th>
-                                          <th>RATE</th>
-                                          <th>PRIVATE KEY</th>
-                                          <th>TOTAL USAGE</th>
+                                          <th>RATE(uIOTA/s)</th>
+                                          <th>CURRENT USER (PRIVATE KEY)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -198,7 +197,18 @@
                     </div>
                 </div>
                 <!-- /.row -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="white-box">
+                            <h3 class="box-title">Data</h3>
+                            <img src='../plugins/images/access.jpg'/>
+                            <img src='../plugins/images/usage.jpg'/>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
             </div>
+
             <!-- /.container-fluid -->
             <footer class="footer text-center"> 2018 &copy; All Rights Reserved by Team B-Share</footer>
         </div>
@@ -312,12 +322,11 @@
         devicesActive++;
         var row = $("<tr />")
         $("#deviceTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-        row.append($("<td>"+ rowData.Dtype + "<img src='../plugins/images/" + rowData.Dtype +  ".png' /></td>"));
+        row.append($("<td>" + "<img src='../plugins/images/" + rowData.Dtype +  ".png' style='height:30%'/></td>"));
         row.append($("<td>" + rowData.Did + "</td>"));
         row.append($("<td> <img src='../plugins/images/on.jpg' style='height:30%'/ > </td>"));
         row.append($("<td>" + rowData.rate + "</td>"));
-        row.append($("<td>" + rowData.Address + "</td>"));
-        row.append($("<td>" + rowData.rate + " X hours </td>"));
+        row.append($("<td>" + rowData.User + "</td>"));
 
       }
 

@@ -73,11 +73,11 @@ func EncryptUser(name string, phone string) (string, error) {
 }
 
 // GetTotalPrice will return the status of user
-func (u User) GetStatus(address string) (UserStatus, error) {
+func (u User) GetStatus() (UserStatus, error) {
 	var target *User = nil
 
 	for _, user := range UserData.Data {
-		if address == user.Address {
+		if u.Address == user.Address {
 			target = &user
 		}
 	}
