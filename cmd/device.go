@@ -48,8 +48,6 @@ var deviceCmd = &cobra.Command{
 Only data from the authenticated devices are collected`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		url := "http://localhost:4000/device"
-
 		var dmsg = conf.DeviceMsg{
 			Dtype: device_dtype,
 			Did:   device_did,
@@ -62,7 +60,7 @@ Only data from the authenticated devices are collected`,
 			log.Fatal(err)
 		}
 
-		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonDmsg))
+		req, err := http.NewRequest("POST", deviceURL, bytes.NewBuffer(jsonDmsg))
 		req.Header.Set("Cnotent-type", "application/json")
 
 		client := http.Client{}
@@ -82,7 +80,7 @@ func init() {
 	deviceCmd.Flags().StringSliceVarP(&device_uInfo, "user", "u",
 		[]string{"", ""}, "User name and phone number")
 	deviceCmd.Flags().StringVarP(&devide_msg, "msg", "m", "on", "Message")
-	deviceCmd.Flags().StringVar(&deviceURL, "url", "http://localhost/device", "URL to the server")
+	deviceCmd.Flags().StringVar(&deviceURL, "url", "http://localhost:4000/device", "URL to the server")
 
 	viper.BindPFlag("type", deviceCmd.Flags().Lookup("type"))
 	viper.BindPFlag("id", deviceCmd.Flags().Lookup("id"))
