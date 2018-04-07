@@ -159,7 +159,7 @@
                                           <th>ID</th>
                                           <th>STATUS</th>
                                           <th>RATE(uIOTA/s)</th>
-                                          <th>CURRENT USER (PRIVATE KEY)</th>
+                                          <th>CURRENT USER (ENCRYPTED)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -171,12 +171,11 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" style="display:none">
                     <div class="col-sm-12">
                         <div class="white-box">
                             <h3 class="box-title">Users Active</h3>
                             <input type="text" id="userInput" onkeyup="filterUsers()" placeholder="Search for names.." >
-                            <!-- <p class="text-muted">Add class <code>.table</code></p> -->
                             <div class="table-responsive">
                                 <table class="table" id="userTable">
                                     <thead>

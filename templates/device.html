@@ -140,7 +140,7 @@
                                             <th>ID</th>
                                             <th>STATUS</th>
                                             <th>RATE(uIOTA/s)</th>
-                                            <th>AUTHORIZED USERS (PRIVATE KEY)</th>
+                                            <th>AUTHORIZED USERS (ENCRYPTED)</th>
                                             <th></th><th></th>
                                         </tr>
                                     </thead>
@@ -231,7 +231,7 @@
       row.append($("<td>" + "<img src='../plugins/images/" + rowData.Dtype +  ".png' style='height:30%'/></td>"));
       row.append($("<td>("+ rowData.Dtype + ")</td>"));
 
-      row.append($("<td>" + rowData.Did + "</td>"));
+      row.append($("<td style='width:20vh'>" + rowData.Did + "</td>"));
       if(rowData.Status){
         row.append($("<td> <img src='../plugins/images/on.jpg' style='height:30%'/ > </td>"));
       }else{
@@ -248,7 +248,8 @@
         // alert(k)
         users+=("\n"+String(k))
       }
-      row.append($("<td>" + users + "</td>"));
+      row.append($("<td >" + users + "</td>"));
+      row.append($("<td >" + "</td>"))
 
     }
 
