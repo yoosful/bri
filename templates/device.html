@@ -140,7 +140,8 @@
                                             <th>ID</th>
                                             <th>STATUS</th>
                                             <th>RATE(uIOTA/s)</th>
-                                            <th>AUTHORIZED USERS (click to view list)</th>
+                                            <th>AUTHORIZED USERS (PRIVATE KEY)</th>
+                                            <th></th><th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -197,7 +198,7 @@
       timer=setInterval(function(){
         updateDeviceData();
 
-      }, 3000); //every 3 sec
+      }, 1000); //every 3 sec
 
 
     });
@@ -237,7 +238,17 @@
         row.append($("<td> <img src='../plugins/images/off.jpg' style='height:30%'/> </td>"));
       }
       row.append($("<td>" + rowData.rate + "</td>"));
-      row.append($("<td>" + rowData.User + " X hours </td>"));
+      var index=0
+      var users=""
+      for (var k in rowData.Perm){
+        index++
+        if(index>2){
+          break
+        }
+        // alert(k)
+        users+=("\n"+String(k))
+      }
+      row.append($("<td>" + users + "</td>"));
 
     }
 
